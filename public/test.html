@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head><style>
+  body { background: #111; color: white; font-family: sans-serif; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 800px; }
+  .cell { border: 1px solid #444; position: relative; }
+  canvas { width: 100%; display: block; }
+  .label { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 5px; }
+</style></head>
+<body>
+  <h1>Grid Debug</h1>
+  <div class="grid" id="grid"></div>
+  <script>
+    const img = new Image();
+    img.src = '/assets/skybox/cloud_test.png';
+    img.onload = () => {
+      const size = img.width / 3;
+      const grid = document.getElementById('grid');
+      for (let y = 0; y < 2; y++) {
+        for (let x = 0; x < 3; x++) {
+          const div = document.createElement('div');
+          div.className = 'cell';
+          const canvas = document.createElement('canvas');
+          canvas.width = size; canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, x*size, y*size, size, size, 0, 0, size, size);
+          div.appendChild(canvas);
+          const label = document.createElement('div');
+          label.className = 'label';
+          label.innerText = '(' + x + ',' + y + ')';
+          div.appendChild(label);
+          grid.appendChild(div);
+        }
+      }
+    };
+  </script>
+</body>
+</html>

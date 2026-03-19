@@ -1,0 +1,29 @@
+{
+  "moduleId": "PlayerESP",
+  "sceneName": "scene_20260315_211644",
+  "capturedAt": "2026-03-15T21:16:45Z",
+  "camera": {
+    "fov": 90.0,
+    "position": [199.14193002385966, 62.0, 152.2172256100754],
+    "yaw": -439.71594,
+    "pitch": 5.9439354
+  },
+  "entities": [
+    {
+      "type": "player",
+      "id": "player_505249762",
+      "position": [181.5, 60.0, 151.15625],
+      "yaw": 4.21875,
+      "pitch": 0.0,
+      "height": 1.8,
+      "width": 0.6,
+      "metadata": {
+        "health": 834.0,
+        "name": "LoyisaIsImposter",
+        "distance": 17.8,
+        "armorPoints": 0
+      }
+    }
+  ],
+  "objects": []
+}

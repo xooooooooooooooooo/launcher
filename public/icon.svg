@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Helmet body (dark purple/indigo) -->
+  <path d="M50 95 C30 95 15 80 15 65 L15 50 C15 40 20 32 28 28 L28 20 C28 15 32 10 38 10 L62 10 C68 10 72 15 72 20 L72 28 C80 32 85 40 85 50 L85 65 C85 80 70 95 50 95 Z" fill="#3d1f6e"/>
+  <!-- Left horn -->
+  <path d="M28 28 C20 25 10 30 8 45 C6 55 12 62 18 58 C15 50 18 40 28 35 Z" fill="#3d1f6e"/>
+  <!-- Right horn -->
+  <path d="M72 28 C80 25 90 30 92 45 C94 55 88 62 82 58 C85 50 82 40 72 35 Z" fill="#3d1f6e"/>
+  <!-- Visor slit left -->
+  <path d="M32 58 L42 55 L42 62 L32 65 Z" fill="#f0ece8"/>
+  <!-- Visor slit right -->
+  <path d="M68 58 L58 55 L58 62 L68 65 Z" fill="#f0ece8"/>
+  <!-- Center visor gap -->
+  <path d="M42 55 L58 55 L58 62 L42 62 Z" fill="#3d1f6e"/>
+  <!-- Flame left -->
+  <path d="M38 10 C35 0 28 -5 32 -15 C25 -5 20 5 26 15 C22 10 20 2 24 -5 C20 5 22 15 30 18 Z" fill="#e53e3e" transform="translate(0, 20)"/>
+  <!-- Flame center (main) -->
+  <path d="M50 10 C47 -5 38 -10 42 -25 C35 -10 30 5 38 18 C33 10 32 0 37 -8 C33 5 36 18 46 22 Z" fill="#e53e3e" transform="translate(0, 20)"/>
+  <!-- Flame right -->
+  <path d="M62 10 C65 0 72 -5 68 -15 C75 -5 80 5 74 15 C78 10 80 2 76 -5 C80 5 78 15 70 18 Z" fill="#e53e3e" transform="translate(0, 20)"/>
+</svg>

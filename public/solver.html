@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { margin: 0; background: #222; color: white; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; }
+    #canvas-container { flex: 1; min-height: 0; }
+    #ui { padding: 10px; background: #111; display: flex; gap: 20px; flex-wrap: wrap; }
+    button { padding: 8px 16px; cursor: pointer; }
+    .face-panel { border: 1px solid #444; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div id="ui">
+    <div id="faces"></div>
+    <div>
+      <button id="btn-export">Export Config</button>
+      <div id="output" style="margin-top: 10px; font-family: monospace;"></div>
+    </div>
+  </div>
+  <div id="canvas-container"></div>
+
+  <script>
+    const IMG_URL = '/assets/skybox/cloud_test.png';
+    const facesConfig = {
+      px: { src: [2,1], rotate: 0, flipH: true, name: 'Right (+X)' },
+      nx: { src: [0,1], rotate: 0, flipH: true, name: 'Left (-X)' },
+      py: { src: [0,0], rotate: 0, flipH: false, name: 'Top (+Y)' },
+      ny: { src: [1,0], rotate: 0, flipH: false, name: 'Bottom (-Y)' },
+      pz: { src: [2,0], rotate: 0, flipH: true, name: 'Back (+Z)' },
+      nz: { src: [1,1], rotate: 0, flipH: true, name: 'Front (-Z)' }
+    };
+    const order = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
+
+    let scene, camera, renderer, img;
+
+    function init3D() {
+      const container = document.getElementById('canvas-container');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(80, container.clientWidth / container.clientHeight, 0.1, 100);
+      camera.rotation.order = 'YXZ';
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+
+      img = new Image();
+      img.src = IMG_URL;
+      img.onload = () => {
+        updateCubemap();
+        animate();
+      };
+
+      // simple drag to look
+      let isDragging = false, prevX = 0, prevY = 0;
+      let yaw = 0, pitch = 0;
+      renderer.domElement.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+      window.addEventListener('mouseup', () => isDragging = false);
+      window.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        yaw -= (e.clientX - prevX) * 0.01;
+        pitch -= (e.clientY - prevY) * 0.01;
+        pitch = Math.max(-1.5, Math.min(1.5, pitch));
+        camera.rotation.y = yaw;
+        camera.rotation.x = pitch;
+        prevX = e.clientX; prevY = e.clientY;
+      });
+    }
+
+    function updateCubemap() {
+      const size = img.width / 3;
+      const canvases = order.map(id => {
+        const conf = facesConfig[id];
+        const c = document.createElement('canvas');
+        c.width = size; c.height = size;
+        const ctx = c.getContext('2d');
+        
+        ctx.translate(size/2, size/2);
+        ctx.rotate(conf.rotate * Math.PI / 2);
+        if (conf.flipH) ctx.scale(-1, 1);
+        ctx.translate(-size/2, -size/2);
+        
+        ctx.drawImage(img, conf.src[0]*size, conf.src[1]*size, size, size, 0, 0, size, size);
+        return c;
+      });
+      const tex = new THREE.CubeTexture(canvases);
+      tex.needsUpdate = true;
+      scene.background = tex;
+    }
+
+    function buildUI() {
+      const fContainer = document.getElementById('faces');
+      fContainer.style.display = 'flex';
+      fContainer.style.gap = '10px';
+      
+      order.forEach(id => {
+        const div = document.createElement('div');
+        div.className = 'face-panel';
+        div.innerHTML = '<strong>' + facesConfig[id].name + '</strong>';
+        
+        const btnRot = document.createElement('button');
+        btnRot.innerText = 'Rotate 90 CW';
+        btnRot.onclick = () => { facesConfig[id].rotate = (facesConfig[id].rotate + 1) % 4; updateCubemap(); };
+        
+        const btnFlip = document.createElement('button');
+        btnFlip.innerText = 'Flip H';
+        btnFlip.onclick = () => { facesConfig[id].flipH = !facesConfig[id].flipH; updateCubemap(); };
+        
+        div.appendChild(btnRot);
+        div.appendChild(btnFlip);
+        fContainer.appendChild(div);
+      });
+
+      document.getElementById('btn-export').onclick = () => {
+        document.getElementById('output').innerText = JSON.stringify(facesConfig, null, 2);
+      };
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+
+    init3D();
+    buildUI();
+  </script>
+</body>
+</html>
