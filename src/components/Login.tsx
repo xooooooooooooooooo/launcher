@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, Minimize, X, CheckCircle2 } from "lucide-react";
+import { useSettings } from "@/context/SettingsContext";
 
 interface LoginProps {
   onLoginSuccess: () => void;
@@ -35,7 +36,7 @@ const InputGroup = ({ id, type, label, placeholder, value, icon: Icon, onChange 
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required
-        className="h-11 border-white/10 bg-white/5 pl-10 text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-primary/50"
+        className="h-11 rounded-xl border-white/5 bg-black/20 pl-10 text-white placeholder:text-white/30 focus-visible:ring-1 focus-visible:ring-primary/50 transition-all font-medium backdrop-blur-md"
       />
     </div>
   </div>
@@ -49,6 +50,36 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  
+  const { settings } = useSettings();
+
+  const hexToHslString = (hex: string) => {
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+      r = parseInt(hex[1] + hex[1], 16);
+      g = parseInt(hex[2] + hex[2], 16);
+      b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length === 7) {
+      r = parseInt(hex.slice(1, 3), 16);
+      g = parseInt(hex.slice(3, 5), 16);
+      b = parseInt(hex.slice(5, 7), 16);
+    }
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+  };
+  const primaryHsl = settings.primaryColor ? hexToHslString(settings.primaryColor) : "0 0% 100%";
 
   useEffect(() => {
     if (ipcRenderer) {
@@ -81,8 +112,15 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
+    <>
+    <style suppressHydrationWarning>{`
+      .login-theme {
+        --primary: ${primaryHsl};
+        --ring: ${primaryHsl};
+      }
+    `}</style>
     <div
-      className="relative flex h-full w-full items-stretch justify-center"
+      className="login-theme relative flex h-full w-full items-stretch justify-center select-none"
       style={{ borderRadius: 24, overflow: "hidden" }}
     >
       <AnimatePresence>
@@ -107,12 +145,21 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#0a0b0f]">
+      <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#030303]">
+        {/* Subtle Grid Pattern from Professional Theme */}
+        <div 
+          className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+          style={{ 
+            backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+            backgroundSize: '40px 40px' 
+          }} 
+        />
+
         {/* Custom window header (drag area + controls) */}
         {ipcRenderer && (
           <div
-            className="absolute top-0 left-0 right-0 flex h-8 items-center justify-end px-1"
-            style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+            className="absolute top-0 left-0 right-0 z-50 flex h-11 items-center justify-end px-1"
+            style={{ WebkitAppRegion: "drag", borderTopLeftRadius: 24, borderTopRightRadius: 24 } as React.CSSProperties}
           >
             <div
               className="flex items-center gap-1"
@@ -121,49 +168,62 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               <button
                 type="button"
                 onClick={() => ipcRenderer.invoke("minimize-window")}
-                className="flex h-7 w-8 items-center justify-center text-zinc-300/70 transition-colors hover:bg-white/5 hover:text-white"
+                className="flex h-8 w-10 items-center justify-center text-white/50 transition-colors hover:bg-white/10 hover:text-white rounded-md"
               >
-                <Minimize className="h-3 w-3" />
+                <Minimize className="h-3.5 w-3.5" />
               </button>
               <button
                 type="button"
                 onClick={() => ipcRenderer.invoke("close-window")}
-                className="flex h-7 w-8 items-center justify-center text-zinc-300/80 transition-colors hover:bg-red-500/80 hover:text-white"
+                className="flex h-8 w-11 items-center justify-center text-white/50 transition-colors hover:bg-red-500/80 hover:text-white rounded-md mr-1"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           </div>
         )}
 
-        {/* Background gradient / glow */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,180,0,0.12),transparent)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_110%,rgba(255,180,0,0.06),transparent)]" />
-
-        <div className="relative mt-4 w-full max-w-[400px] px-6">
+        <div className="relative z-10 w-full max-w-[400px] px-6">
           {/* Logo + title */}
           <div className="mb-8 flex flex-col items-center gap-4">
-            <div className="relative">
-              <div className="absolute inset-0 scale-150 rounded-full bg-primary/20 blur-2xl" />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="relative"
+            >
+              <div className="absolute inset-0 scale-[1.5] rounded-full bg-white/5 blur-[20px]" />
               <img
                 src="./logo.png"
                 alt="Hades"
-                className="relative h-20 w-20 object-contain drop-shadow-[0_0_20px_rgba(255,180,0,0.35)]"
+                className="relative h-20 w-20 object-contain saturate-0 brightness-200 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] pointer-events-none select-none"
+                draggable="false"
               />
-            </div>
-            <div className="text-center">
-              <h1 className="font-display text-2xl font-black tracking-[0.2em] text-foreground [text-shadow:0_0_30px_rgba(255,180,0,0.2)]">
+            </motion.div>
+            <motion.div 
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-center"
+            >
+              <h1 className="font-display text-2xl font-black tracking-[0.25em] text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
                 HADES
               </h1>
-              <p className="mt-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+              <p className="mt-1.5 text-[10px] font-bold tracking-[0.3em] text-primary uppercase">
                 Management Suite
               </p>
-            </div>
+            </motion.div>
           </div>
 
           {/* Card */}
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-xl">
-            <form onSubmit={handleLogin} className="space-y-4">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="relative overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] p-8 backdrop-blur-md shadow-2xl"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none" />
+            <form onSubmit={handleLogin} className="relative z-10 space-y-4">
               <InputGroup
                 id="email"
                 type="email"
@@ -185,26 +245,32 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               <Button
                 type="submit"
                 disabled={loading}
-                className="mt-6 h-11 w-full rounded-xl bg-primary font-semibold text-primary-foreground shadow-[0_8px_24px_rgba(255,180,0,0.25)] hover:bg-primary/90 hover:shadow-[0_8px_28px_rgba(255,180,0,0.35)]"
+                className="mt-6 h-12 w-full rounded-xl bg-primary font-bold text-primary-foreground shadow-[0_0_15px_hsl(var(--primary)/0.3)] hover:brightness-110 transition-all active:scale-[0.98]"
               >
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
+                    Authenticating...
                   </>
                 ) : (
-                  <>Continue</>
+                  <>Authenticate</>
                 )}
               </Button>
             </form>
-          </div>
+          </motion.div>
 
-          <p className="mt-6 text-center text-[11px] text-muted-foreground/70">
-            Same account as on the website. Purchase licenses and manage your subscription there.
-          </p>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-8 text-center text-xs font-medium text-white/40"
+          >
+            A Hades Network License is required to enter.
+          </motion.p>
         </div>
       </div>
     </div>
+    </>
   );
 }
 

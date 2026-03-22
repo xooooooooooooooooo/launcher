@@ -81,11 +81,11 @@ const FRAGMENT_AURORA = `
     float band1 = sin(uv.x * 4.0 + t) * 0.5 + 0.5;
     float band2 = sin(uv.x * 3.0 + t * 1.3 + 1.0) * 0.5 + 0.5;
     float mask = exp(-uv.y * 2.0) * (1.0 - smoothstep(0.3, 0.8, abs(uv.y)));
-    vec3 green = vec3(0.2, 0.9, 0.5);
-    vec3 blue = vec3(0.2, 0.5, 0.9);
-    vec3 col = vec3(0.08, 0.09, 0.18);
-    col = mix(col, green, band1 * mask * 0.5);
-    col = mix(col, blue, band2 * mask * 0.4);
+    vec3 c1 = vec3(0.9, 0.9, 0.9);
+    vec3 c2 = vec3(0.6, 0.6, 0.6);
+    vec3 col = vec3(0.0, 0.0, 0.0);
+    col = mix(col, c1, band1 * mask * 0.5);
+    col = mix(col, c2, band2 * mask * 0.4);
     float vig = 1.0 - 0.25 * length(uv);
     col *= vig;
     gl_FragColor = vec4(col, 1.0);
@@ -312,7 +312,7 @@ function runCanvas2DAurora(
       return;
     }
     const t = performance.now() / 1000 - start;
-    ctx.fillStyle = "#0a0c18";
+    ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, w, h);
     const cy = h * 0.35;
     for (let i = 0; i < 4; i++) {
@@ -320,9 +320,9 @@ function runCanvas2DAurora(
       const y = cy + Math.sin(phase) * 25 + i * 20;
       const band = ctx.createLinearGradient(0, y - 60, 0, y + 60);
       band.addColorStop(0, "transparent");
-      band.addColorStop(0.4, `rgba(50,220,140,${0.12 * (0.5 + 0.5 * Math.sin(phase * 0.7))})`);
-      band.addColorStop(0.5, `rgba(80,200,240,${0.1 * (0.5 + 0.5 * Math.sin(phase * 0.7 + 1))})`);
-      band.addColorStop(0.6, `rgba(50,220,140,${0.08 * (0.5 + 0.5 * Math.sin(phase * 0.7 + 2))})`);
+      band.addColorStop(0.4, `rgba(255,255,255,${0.12 * (0.5 + 0.5 * Math.sin(phase * 0.7))})`);
+      band.addColorStop(0.5, `rgba(200,200,200,${0.1 * (0.5 + 0.5 * Math.sin(phase * 0.7 + 1))})`);
+      band.addColorStop(0.6, `rgba(255,255,255,${0.08 * (0.5 + 0.5 * Math.sin(phase * 0.7 + 2))})`);
       band.addColorStop(1, "transparent");
       ctx.fillStyle = band;
       ctx.fillRect(0, y - 60, w, 120);
@@ -409,7 +409,7 @@ const CANVAS2D_RUNNERS: Record<ShaderPresetId, (c: HTMLDivElement, canvas: HTMLC
 const CLEAR_COLORS: Record<ShaderPresetId, [number, number, number]> = {
   "gold-orbs": [0.14, 0.15, 0.2],
   stars: [0.06, 0.07, 0.12],
-  aurora: [0.08, 0.09, 0.18],
+  aurora: [0.0, 0.0, 0.0],
   waves: [0.08, 0.1, 0.18],
 };
 
