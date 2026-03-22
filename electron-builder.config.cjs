@@ -39,7 +39,8 @@ module.exports = {
     {
       provider: 'github',
       owner: 'xooooooooooooooooo',
-      repo: 'launcher'
+      repo: 'launcher',
+      releaseType: 'release'
     }
   ],
 };

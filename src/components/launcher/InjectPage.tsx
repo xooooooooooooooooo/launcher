@@ -48,20 +48,33 @@ const InjectPage = ({
   // Auto Updater State
   const [updateReady, setUpdateReady] = React.useState(false);
   const [updateVersion, setUpdateVersion] = React.useState<string | null>(null);
+  const [updateProgress, setUpdateProgress] = React.useState<number>(0);
+  const [updateError, setUpdateError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!ipcRenderer) return;
     const onAvailable = (_: any, info: any) => {
       setUpdateVersion(info.version);
+      setUpdateError(null);
+    };
+    const onProgress = (_: any, progressObj: any) => {
+      setUpdateProgress(progressObj.percent);
     };
     const onDownloaded = () => {
       setUpdateReady(true);
     };
+    const onError = (_: any, errorStr: string) => {
+      setUpdateError(errorStr);
+    };
     ipcRenderer.on("updater:available", onAvailable);
+    ipcRenderer.on("updater:progress", onProgress);
     ipcRenderer.on("updater:downloaded", onDownloaded);
+    ipcRenderer.on("updater:error", onError);
     return () => {
       ipcRenderer.removeListener("updater:available", onAvailable);
+      ipcRenderer.removeListener("updater:progress", onProgress);
       ipcRenderer.removeListener("updater:downloaded", onDownloaded);
+      ipcRenderer.removeListener("updater:error", onError);
     };
   }, []);
 
@@ -124,9 +137,20 @@ const InjectPage = ({
             <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
             <div>
               <h3 className="text-sm font-bold text-white tracking-wide">Update v{updateVersion} Discovered</h3>
-              <p className="text-xs text-white/50 tracking-wide font-mono mt-0.5">
-                {updateReady ? "Download complete. Ready for integration." : "Downloading background payload..."}
-              </p>
+              <div className="flex flex-col mt-0.5 gap-1.5">
+                <p className={`text-xs tracking-wide font-mono ${updateError ? "text-red-400" : "text-white/50"}`}>
+                  {updateError 
+                    ? `Download Error: ${updateError}`
+                    : updateReady 
+                      ? "Download complete. Ready for integration." 
+                      : `Downloading background payload... ${Math.round(updateProgress)}%`}
+                </p>
+                {!updateReady && !updateError && (
+                  <div className="h-1 w-48 bg-black/50 overflow-hidden rounded-full">
+                    <div className="h-full bg-primary transition-all duration-300" style={{ width: `${updateProgress}%` }} />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           {updateReady && (

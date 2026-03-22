@@ -1,7 +1,11 @@
 {
   "name": "hades-injector",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Hades Client Launcher - Desktop App",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xooooooooooooooooo/launcher.git"
+  },
   "main": "main.js",
   "scripts": {
     "dev": "vite",
