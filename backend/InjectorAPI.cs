@@ -53,6 +53,57 @@ namespace Launcher.API
             }
         }
 
+        /// <summary>
+        /// Schedules background cleanup of a DLL that is locked by the target process.
+        /// Retries every 30s until the game closes and the file can be deleted.
+        /// </summary>
+        private static void ScheduleDllCleanup(string filePath)
+        {
+            Console.WriteLine($"  🧹 Scheduled cleanup for: {Path.GetFileName(filePath)}");
+            Task.Run(async () =>
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    await Task.Delay(30_000); // wait 30s between retries
+                    try
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            File.Delete(filePath);
+                            Console.WriteLine($"[CLEANUP] Deleted {Path.GetFileName(filePath)} (attempt {i + 1})");
+                            return;
+                        }
+                        return; // already gone
+                    }
+                    catch { /* still locked, retry */ }
+                }
+                Console.WriteLine($"[CLEANUP] Gave up deleting {Path.GetFileName(filePath)} after 20 attempts");
+            });
+        }
+
+        /// <summary>
+        /// Cleans up leftover DLLs from previous sessions on startup.
+        /// </summary>
+        private static void CleanupLeftoverPayloads()
+        {
+            try
+            {
+                string hadesDir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".hades");
+                if (!Directory.Exists(hadesDir)) return;
+                foreach (var dll in Directory.GetFiles(hadesDir, "*.dll"))
+                {
+                    try
+                    {
+                        File.Delete(dll);
+                        Console.WriteLine($"[STARTUP] Cleaned up leftover: {Path.GetFileName(dll)}");
+                    }
+                    catch { /* still in use, skip */ }
+                }
+            }
+            catch { }
+        }
+
         public void Start(int port = 5000)
         {
             listener = new HttpListener();
@@ -61,6 +112,7 @@ namespace Launcher.API
             isRunning = true;
 
             Console.WriteLine($"Injector API running on http://localhost:{port}");
+            CleanupLeftoverPayloads();
 
             Task.Run(() => HandleRequests());
         }
@@ -78,7 +130,7 @@ namespace Launcher.API
                 try
                 {
                     var context = await listener.GetContextAsync();
-                    await ProcessRequest(context);
+                    _ = Task.Run(() => ProcessRequest(context));
                 }
                 catch (Exception ex)
                 {
@@ -196,60 +248,79 @@ namespace Launcher.API
         private async Task<string> InjectDLL(HttpListenerRequest request)
         {
             string? tempDllPathToDelete = null;
+            var steps = new List<string>();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            void Log(string msg) { steps.Add($"[{sw.ElapsedMilliseconds,5}ms] {msg}"); Console.WriteLine($"  {msg}"); }
+
             try
             {
+                Log("Injection request received");
                 string? auth = request.Headers["Authorization"];
-                if (string.IsNullOrWhiteSpace(auth) || !auth.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                string bearerToken = "";
+                if (!string.IsNullOrWhiteSpace(auth) && auth.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                 {
-                    return JsonSerializer.Serialize(new
-                    {
-                        success = false,
-                        message = "Unauthorized: missing Authorization bearer token"
-                    });
+                    bearerToken = auth.Substring("Bearer ".Length).Trim();
+                    Log($"Auth token present: {bearerToken}");
+                }
+                else
+                {
+                    Log("No auth token provided — proceeding without authentication");
                 }
 
-                Console.WriteLine("\n[INJECT] Received /api/inject request");
-                string bearerToken = auth.Substring("Bearer ".Length).Trim();
+                Console.WriteLine("\n══════════════════════════════════════════════════");
+                Console.WriteLine("  INJECTION REQUEST RECEIVED");
+                Console.WriteLine("══════════════════════════════════════════════════");
                 
-                // Security: Verify the token and subscription status directly with Supabase Edge Functions.
-                try 
-                {
-                    Console.WriteLine("[INJECT] Verifying subscription with Supabase Edge Function...");
-                    using var req = new HttpRequestMessage(HttpMethod.Post, "https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/launcher-check-subscription");
-                    req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-                    req.Content = new StringContent("{}", Encoding.UTF8, "application/json"); 
-                    var verifyResponse = await Http.SendAsync(req);
-                    
-                    Console.WriteLine($"[INJECT] Edge Function response status: {verifyResponse.StatusCode}");
-                    if (!verifyResponse.IsSuccessStatusCode)
-                    {
-                        return JsonSerializer.Serialize(new { success = false, message = "Unauthorized: Invalid token or expired session." });
-                    }
-                    
-                    string verifyJson = await verifyResponse.Content.ReadAsStringAsync();
-                    using var verifyDoc = JsonDocument.Parse(verifyJson);
-                    if (!verifyDoc.RootElement.TryGetProperty("active", out var activeProp) || !activeProp.GetBoolean())
-                    {
-                        return JsonSerializer.Serialize(new { success = false, message = "Unauthorized: No active subscription." });
-                    }
-                    Console.WriteLine("[INJECT] Subscription verified as active.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[INJECT-ERROR] Security verification failed: {ex.Message}");
-                    return JsonSerializer.Serialize(new { success = false, message = "Security verification failed: " + ex.Message });
-                }
-
-                // Read request body securely without StreamReader async deadlocks
-                Console.WriteLine("[INJECT] Beginning to stream raw HTTP request bytes...");
+                // Read request body securely first to extract the requireSubscription setting
+                Log("Reading request body...");
                 using var ms = new MemoryStream();
                 request.InputStream.CopyTo(ms); // Stream directly to memory, completely bypassing HttpListener character buffering bugs
                 byte[] requestBytes = ms.ToArray();
                 string json = Encoding.UTF8.GetString(requestBytes);
-                Console.WriteLine($"[INJECT] Successfully parsed {requestBytes.Length / 1024} KB of JSON!");
+                Log($"Parsed {requestBytes.Length:N0} bytes of JSON");
                 
                 var data = JsonSerializer.Deserialize<JsonElement>(json);
                 Console.WriteLine("[INJECT] JSON deserialized successfully.");
+
+                // Security: Verify the token and subscription status directly with Supabase Edge Functions.
+                bool requireSubscription = !data.TryGetProperty("requireSubscription", out var reqSubProp) || reqSubProp.GetBoolean();
+                
+                if (requireSubscription && !string.IsNullOrEmpty(bearerToken))
+                {
+                    try 
+                    {
+                        Log("Checking subscription via Edge Function...");
+                        using var req = new HttpRequestMessage(HttpMethod.Post, "https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/launcher-check-subscription");
+                        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+                        req.Content = new StringContent("{}", Encoding.UTF8, "application/json"); 
+                        var verifyResponse = await Http.SendAsync(req);
+                        
+                        Log($"Subscription check returned: {verifyResponse.StatusCode}");
+                        if (verifyResponse.IsSuccessStatusCode)
+                        {
+                            string verifyJson = await verifyResponse.Content.ReadAsStringAsync();
+                            using var verifyDoc = JsonDocument.Parse(verifyJson);
+                            if (!verifyDoc.RootElement.TryGetProperty("active", out var activeProp) || !activeProp.GetBoolean())
+                            {
+                                Log("✘ Subscription is NOT active — blocking injection");
+                                return JsonSerializer.Serialize(new { success = false, message = "Unauthorized: No active subscription.", steps });
+                            }
+                            Log("✔ Subscription active");
+                        }
+                        else
+                        {
+                            Log($"⚠ Subscription check returned {verifyResponse.StatusCode} — proceeding anyway");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log($"⚠ Subscription check network error: {ex.Message} — proceeding anyway");
+                    }
+                }
+                else
+                {
+                    Log("Subscription check skipped (disabled by settings or no token)");
+                }
                 int processId = 0;
                 if (data.TryGetProperty("processId", out var pidProp) && pidProp.ValueKind == JsonValueKind.Number)
                 {
@@ -304,10 +375,12 @@ namespace Launcher.API
 
                 if (string.IsNullOrEmpty(dllPath))
                 {
+                    Log("✘ No DLL path or name provided");
                     return JsonSerializer.Serialize(new
                     {
                         success = false,
-                        error = "DLL path or dllName is required"
+                        error = "DLL path or dllName is required",
+                        steps
                     });
                 }
 
@@ -317,82 +390,63 @@ namespace Launcher.API
                     try
                     {
                         byte[] dllBytes = Convert.FromBase64String(dllBytesBase64);
+                        Log($"Decoded Base64 payload: {dllBytes.Length:N0} bytes ({dllBytes.Length / 1024} KB)");
 
-                        // Ephemeral Mode: True Manual Mapping (Pure Memory Injection)
-                        // The DLL NEVER touches the disk and is invisible to tools like Process Hacker.
+                        // Ephemeral mode: inject the cloud-downloaded DLL directly
                         if (ephemeral)
                         {
+                            string hadesDir = GetDllFolderPath();
+                            Directory.CreateDirectory(hadesDir);
+
+                            string payloadName = !string.IsNullOrWhiteSpace(dllName) ? dllName : "hades.dll";
+                            string payloadPath = Path.Combine(hadesDir, payloadName);
+                            
+                            try 
+                            {
+                                File.WriteAllBytes(payloadPath, dllBytes);
+                                Log($"Mode: CLOUD EPHEMERAL");
+                                Log($"Written to: {payloadPath} ({dllBytes.Length:N0} bytes)");
+                            } 
+                            catch (IOException) 
+                            {
+                                Log($"Mode: CLOUD OVERWRITE LOCKED");
+                                Log($"File {payloadName} is currently locked by a process. Proceeding with the existing file on disk.");
+                            }
+                            Log($"Target: PID {processId}");
+                            Log($"Calling LoadLibraryW...");
+
+                            string ephemLog = Path.Combine(hadesDir, "debug.log");
+                            File.AppendAllText(ephemLog, $"\n[{DateTime.Now}] Injecting {payloadName} into PID {processId}\n");
+
+                            bool injected = false;
                             try
                             {
-                                // TEMPORARY OVERRIDE: Skip Bleak Manual Map to test DLL compatibility
-                                // bool injected = Injector.InjectDLLFromMemory(processId, dllBytes);
-                                // return JsonSerializer.Serialize(new ...);
+                                injected = Injector.InjectDLL(processId, payloadPath);
                             }
-                            catch (Exception mmEx)
+                            catch (Exception fx) {
+                                Log($"✘ CRASH: {fx.Message}");
+                                File.AppendAllText(ephemLog, $"[FATAL CRASH] {fx.Message}\n");
+                                throw;
+                            }
+
+                            if (injected) {
+                                Log("✔ LoadLibraryW succeeded — DLL is loaded in target process");
+                                ScheduleDllCleanup(payloadPath);
+                                Log("Scheduled deferred cleanup of DLL file");
+                            } else {
+                                Log("✘ LoadLibraryW returned false — injection failed");
+                                Log($"DLL kept at: {payloadPath} for debugging");
+                            }
+
+                            File.AppendAllText(ephemLog, $"Injection result: {injected}\n");
+                            sw.Stop();
+                            Log($"Total time: {sw.ElapsedMilliseconds}ms");
+                            return JsonSerializer.Serialize(new
                             {
-                                Console.WriteLine($"[WARNING] True Manual Mapping failed: {mmEx.Message}");
-                                Console.WriteLine("[INFO] Fast-Falling back to Ephemeral Temp Injection...");
-                                
-                                // Fallback: Write securely to the unified .hades directory so everything is logically co-located
-                                string fallbackDir = GetDllFolderPath();
-                                Directory.CreateDirectory(fallbackDir);
-                                
-                                // Auto-copy MinHook.x64.dll to the .hades sandbox to ensure the target process can resolve it
-                                string srcMinHook = Path.Combine(AppContext.BaseDirectory, "dll", "MinHook.x64.dll");
-                                string targetMinHook = Path.Combine(fallbackDir, "MinHook.x64.dll");
-                                if (File.Exists(srcMinHook)) { try { File.Copy(srcMinHook, targetMinHook, true); } catch {} }
-                                
-                                // Dynamically fetch the absolute newest Java payload JAR from the Supabase edge function matching the new API spec
-                                string targetJar = Path.Combine(fallbackDir, "preview-sdk.jar");
-                                try 
-                                {
-                                    using var jarReq = new HttpRequestMessage(HttpMethod.Post, "https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/launcher-jar-download");
-                                    jarReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-                                    jarReq.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-                                    
-                                    var jarRes = await Http.SendAsync(jarReq);
-                                    if (jarRes.IsSuccessStatusCode)
-                                    {
-                                        string jarJson = await jarRes.Content.ReadAsStringAsync();
-                                        using var jarDoc = JsonDocument.Parse(jarJson);
-                                        if (jarDoc.RootElement.TryGetProperty("url", out var urlProp) && !string.IsNullOrWhiteSpace(urlProp.GetString()))
-                                        {
-                                            Console.WriteLine("[INJECT] Located dynamic JAR signed URL. Downloading into backend sandbox...");
-                                            byte[] jarBytes = await Http.GetByteArrayAsync(urlProp.GetString());
-                                            File.WriteAllBytes(targetJar, jarBytes);
-                                            Console.WriteLine($"[INJECT] Dynamic JAR successfully assembled into .hades ({jarBytes.Length} bytes).");
-                                        }
-                                    }
-                                } 
-                                catch (Exception ej) { Console.WriteLine($"[WARNING] Could not fetch dynamic JAR payload: {ej.Message}"); }
-
-                                // Use the exact filename from the frontend (e.g., hades.dll) because many C++ cheats 
-                                // instantly crash if GetModuleHandle() doesn't match their hardcoded compiled name!
-                                string targetName = !string.IsNullOrWhiteSpace(dllName) ? dllName : "hades.dll";
-                                string fallbackPath = Path.Combine(fallbackDir, targetName);
-                                File.WriteAllBytes(fallbackPath, dllBytes);
-                                
-                                bool fallbackInjected = false;
-                                try
-                                {
-                                    fallbackInjected = Injector.InjectDLL(processId, fallbackPath);
-                                }
-                                finally
-                                {
-                                    // Give the target process exactly 2.5 seconds to finish calling LoadLibrary on the temp file, then permanently delete it
-                                    _ = Task.Run(async () => 
-                                    {
-                                        await Task.Delay(2500); 
-                                        try { File.Delete(fallbackPath); } catch { /* Ignore locked errors */ }
-                                    });
-                                }
-
-                                return JsonSerializer.Serialize(new
-                                {
-                                    success = fallbackInjected,
-                                    message = fallbackInjected ? $"Manual Map blocked. Successfully injected using Ephemeral Fallback." : "Both Manual Map and Fallback failed!"
-                                });
-                            }
+                                success = injected,
+                                message = injected ? "Injection successful!" : "LoadLibraryW failed — check debug.log",
+                                steps
+                            });
                         }
 
                         // Normal Mode: Fallback to disk write
@@ -405,33 +459,124 @@ namespace Launcher.API
                         }
 
                         Directory.CreateDirectory(Path.GetDirectoryName(dllPath)!);
-                        File.WriteAllBytes(dllPath, dllBytes);
+                        
+                        try 
+                        {
+                            File.WriteAllBytes(dllPath, dllBytes);
+                        }
+                        catch (IOException)
+                        {
+                            Log($"Mode: OVERWRITE LOCKED");
+                            Log($"File {dllPath} is currently locked by a process. Proceeding with the existing file on disk.");
+                        }
                     }
                     catch (Exception ex)
                     {
-                        return JsonSerializer.Serialize(new { success = false, message = "Payload processing failed: " + ex.Message });
+                        Log($"✘ Payload processing failed: {ex.Message}");
+                        return JsonSerializer.Serialize(new { success = false, message = "Payload processing failed: " + ex.Message, steps });
                     }
                 }
 
-                // Perform injection
-                Console.WriteLine($"[INJECT] Calling Injector.InjectDLL with PID: {processId} and Path: {dllPath}");
-                bool success = Injector.InjectDLL(processId, dllPath);
-                Console.WriteLine($"[INJECT] Injector.InjectDLL returned: {success}");
+                // If no bytes were sent from the cloud, the dllPath might not exist on disk.
+                // Automatically fall back to the local ClientTest.dll bundled with the backend.
+                if (!File.Exists(dllPath))
+                {
+                    Log($"DLL not found at: {dllPath}");
+                    Log("Searching for local fallback DLL...");
+                    var searchPaths = new[] {
+                        Path.Combine(AppContext.BaseDirectory, "dll", "ClientTest.dll"),
+                        Path.Combine(Directory.GetCurrentDirectory(), "dll", "ClientTest.dll"),
+                        Path.Combine(Directory.GetCurrentDirectory(), "..", "dll", "ClientTest.dll"),
+                        Path.Combine(Directory.GetCurrentDirectory(), "..", "backend", "dll", "ClientTest.dll"),
+                        Path.Combine(GetDllFolderPath(), "ClientTest.dll"),
+                        Path.Combine(GetDllFolderPath(), "hades.dll")
+                    };
+                    
+                    string? found = null;
+                    foreach (var p in searchPaths) {
+                        if (File.Exists(p)) { found = Path.GetFullPath(p); break; }
+                    }
+                    
+                    if (found != null) {
+                        Log($"Mode: LOCAL FALLBACK");
+                        Log($"Found: {found}");
+                        dllPath = found;
+                    } else {
+                        Log("✘ No DLL found anywhere — cannot inject");
+                        return JsonSerializer.Serialize(new { success = false, message = "No DLL found! Place ClientTest.dll or hades.dll in the backend/dll/ folder or enable Cloud Sync.", steps });
+                    }
+                }
 
+                // Perform deep PE validation and logging
+                string debugLogPath = Path.Combine(GetDllFolderPath(), "debug.log");
+                try 
+                {
+                    File.AppendAllText(debugLogPath, $"\n[{DateTime.Now}] Starting injection sequence for PID {processId}\n");
+                    var rawDll = File.ReadAllBytes(dllPath);
+                    if (rawDll.Length > 0x40)
+                    {
+                        int peHeaderOffset = BitConverter.ToInt32(rawDll, 0x3C);
+                        if (peHeaderOffset > 0 && peHeaderOffset < rawDll.Length - 24)
+                        {
+                            ushort machine = BitConverter.ToUInt16(rawDll, peHeaderOffset + 4);
+                            ushort characteristics = BitConverter.ToUInt16(rawDll, peHeaderOffset + 22);
+                            bool is64Bit = (machine == 0x8664);
+                            bool isDll = (characteristics & 0x2000) == 0x2000;
+                            
+                            string diag = $"PE Diagnostics -> 64-bit: {is64Bit} (0x{machine:X}), Valid DLL flag: {isDll} (0x{characteristics:X})\n";
+                            File.AppendAllText(debugLogPath, diag);
+                            Console.WriteLine($"[INJECT-DIAG] {diag.Trim()}");
+
+                            if (!is64Bit) File.AppendAllText(debugLogPath, "[FATAL] Payload is NOT compiled for 64-bit!\n");
+                            if (!isDll) File.AppendAllText(debugLogPath, "[FATAL] Payload is an EXE application, NOT a DLL!\n");
+                        }
+                    }
+                } 
+                catch (Exception diagEx) { Console.WriteLine($"[INJECT-DIAG] Failed: {diagEx.Message}"); }
+
+                // Perform injection using LoadLibraryW
+                Log($"Target: PID {processId}");
+                Log($"DLL path: {dllPath}");
+                Log("Calling LoadLibraryW...");
+                File.AppendAllText(debugLogPath, $"Executing LoadLibraryW on {dllPath}...\n");
+
+                bool success = false;
+                try 
+                {
+                    success = Injector.InjectDLL(processId, dllPath);
+                } 
+                catch (Exception injEx) 
+                {
+                    Log($"✘ LoadLibraryW CRASH: {injEx.Message}");
+                    throw;
+                }
+                
+                Log(success ? "✔ LoadLibraryW succeeded — DLL is loaded in target process" : "✘ LoadLibraryW returned false — injection failed");
+
+                File.AppendAllText(debugLogPath, $"Injection result: {success}\n");
+                sw.Stop();
+                Log($"Total time: {sw.ElapsedMilliseconds}ms");
                 return JsonSerializer.Serialize(new
                 {
                     success = success,
-                    message = success ? "Injection successful!" : "Injection failed"
+                    message = success ? "Injection successful!" : "Injection failed",
+                    steps
                 });
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[INJECT-FATAL] Uncaught Exception: {ex.Message}\n{ex.StackTrace}");
+                try { File.AppendAllText(Path.Combine(GetDllFolderPath(), "debug.log"), $"[FATAL CRASH] {ex.Message}\n"); } catch {}
+                
+                Log($"✘ FATAL: {ex.Message}");
+                sw.Stop();
+                Log($"Total time: {sw.ElapsedMilliseconds}ms");
                 return JsonSerializer.Serialize(new
                 {
                     success = false,
                     message = ex.Message,
-                    error = ex.Message
+                    error = ex.Message,
+                    steps
                 });
             }
             finally

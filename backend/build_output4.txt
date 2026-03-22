@@ -1,0 +1,9 @@
+﻿  Wiederherzustellende Projekte werden ermittelt...
+  Alle Projekte sind f├╝r die Wiederherstellung auf dem neuesten Stand.
+  InjectorAPI -> C:\Users\p\Desktop\Project\launcher\backend\bin\Debug\net10.0\win-x64\InjectorAPI.dll
+
+Der Buildvorgang wurde erfolgreich ausgef├╝hrt.
+    0 Warnung(en)
+    0 Fehler
+
+Verstrichene Zeit 00:00:04.56

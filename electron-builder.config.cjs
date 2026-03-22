@@ -35,4 +35,11 @@ module.exports = {
     runAfterFinish: true,
     deleteAppDataOnUninstall: false,
   },
+  publish: [
+    {
+      provider: 'github',
+      owner: 'xooooooooooooooooo',
+      repo: 'launcher'
+    }
+  ],
 };

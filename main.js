@@ -4,6 +4,9 @@ const os = require('os');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const readline = require('readline');
+const { autoUpdater } = require('electron-updater');
+
+autoUpdater.autoDownload = false;
 
 // Preview SDK JAR path (Visual Configurator ESP overlay)
 function getPreviewSdkJarPath() {
@@ -139,7 +142,7 @@ function createWindow() {
   if (app.isPackaged) {
     // Production: load from built files
     const indexPath = path.join(__dirname, 'dist', 'index.html');
-    mainWindow.loadURL(`file://${indexPath}`);
+    mainWindow.loadFile(indexPath);
   } else {
     // Development: load from Vite dev server
     mainWindow.loadURL('http://localhost:5173');
@@ -446,15 +449,51 @@ app.whenReady().then(() => {
   startBackend();
   createWindow();
 
-  // Initial check
+  // Initial check (DLLs)
   checkForUpdates();
 
+  if (app.isPackaged) {
+    autoUpdater.checkForUpdates();
+  }
+
   // Periodic check (every 5 minutes)
-  setInterval(checkForUpdates, 1000 * 60 * 5);
+  setInterval(() => {
+    checkForUpdates();
+    if (app.isPackaged) autoUpdater.checkForUpdates();
+  }, 1000 * 60 * 5);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
   });
+});
+
+// Auto-Updater handlers
+ipcMain.handle('app:check-updates', () => {
+  if (app.isPackaged) autoUpdater.checkForUpdates();
+});
+
+ipcMain.handle('app:download-update', () => {
+  if (app.isPackaged) autoUpdater.downloadUpdate();
+});
+
+ipcMain.handle('app:quit-and-install', () => {
+  if (app.isPackaged) autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on('update-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('updater:available', info);
+});
+autoUpdater.on('update-not-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('updater:not-available', info);
+});
+autoUpdater.on('download-progress', (progressObj) => {
+  if (mainWindow) mainWindow.webContents.send('updater:progress', progressObj);
+});
+autoUpdater.on('update-downloaded', (info) => {
+  if (mainWindow) mainWindow.webContents.send('updater:downloaded', info);
+});
+autoUpdater.on('error', (err) => {
+  if (mainWindow) mainWindow.webContents.send('updater:error', err.message || err.toString());
 });

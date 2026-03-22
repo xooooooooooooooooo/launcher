@@ -8,6 +8,14 @@ static int? ParsePort(string? s)
 
 var api = new InjectorAPI();
 
+AppDomain.CurrentDomain.UnhandledException += (s, ev) => 
+{
+    try {
+        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".hades", "backend_crash.txt");
+        File.WriteAllText(path, ((Exception)ev.ExceptionObject).ToString());
+    } catch {}
+};
+
 var preferredPort = ParsePort(Environment.GetEnvironmentVariable("INJECTOR_API_PORT"))
                     ?? (args.Length > 0 ? ParsePort(args[0]) : null)
                     ?? 5000;

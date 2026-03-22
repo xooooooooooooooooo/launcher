@@ -101,8 +101,8 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               transition={{ type: "spring", stiffness: 300, damping: 24 }}
               className="flex flex-col items-center gap-3"
             >
-              <CheckCircle2 className="h-16 w-16 text-emerald-400 drop-shadow-[0_0_20px_rgba(52,211,153,0.5)]" />
-              <span className="text-sm font-semibold text-emerald-400">Welcome back</span>
+              <CheckCircle2 className="h-16 w-16 text-primary drop-shadow-[0_0_20px_hsl(var(--primary)/0.5)]" />
+              <span className="text-sm font-semibold text-primary">Welcome back</span>
             </motion.div>
           </motion.div>
         )}
@@ -207,3 +207,4 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     </div>
   );
 }
+

@@ -44,7 +44,7 @@ export function StevePreviewFallback({ previewOptions = defaultOpts }: { preview
         </div>
       )}
       {opts.targetHud && (
-        <div className="pointer-events-none absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-[10px] font-medium text-emerald-400">
+        <div className="pointer-events-none absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-[10px] font-medium text-primary">
           Target HUD
         </div>
       )}
@@ -54,3 +54,4 @@ export function StevePreviewFallback({ previewOptions = defaultOpts }: { preview
     </div>
   );
 }
+

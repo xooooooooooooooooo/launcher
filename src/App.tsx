@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { SettingsProvider } from "@/context/SettingsContext";
+import { SettingsProvider, useSettings } from "@/context/SettingsContext";
 import Launcher from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./components/Login";
@@ -22,6 +22,13 @@ function AuthView({ session, profile }: { session: any; profile: any }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [dllPayload, setDllPayload] = useState<{ name: string; buffer: ArrayBuffer } | null>(null);
+  const { settings } = useSettings();
+
+  useEffect(() => {
+    if (!settings.useCloudSync) {
+      setDllPayload(null); // Clear cloud payload memory so backend falls back to local physical disk testing
+    }
+  }, [settings.useCloudSync]);
 
   useEffect(() => {
     if (!session && location.pathname === "/launcher") navigate("/", { replace: true });
@@ -50,7 +57,7 @@ function AuthView({ session, profile }: { session: any; profile: any }) {
           transition={pageTransition.transition}
           className="h-full w-full min-h-0 min-w-0"
         >
-          <DllSync onDllFetched={(name, buffer) => setDllPayload({ name, buffer })} />
+          {settings.useCloudSync && <DllSync onDllFetched={(name, buffer) => setDllPayload({ name, buffer })} />}
           <Launcher profile={profile} user={session.user} session={session} dllPayload={dllPayload} />
         </motion.div>
       )}

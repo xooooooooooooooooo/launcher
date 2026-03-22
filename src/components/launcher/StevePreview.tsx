@@ -118,7 +118,7 @@ export function StevePreview({ previewOptions = defaultPreviewOptions }: { previ
         loadSkinIntoViewer(viewer, img);
         setSkinLoaded(true);
       };
-      img.src = "/steve.png";
+      img.src = "./steve.png";
     };
 
     const tryFetchSkin = async () => {
@@ -335,10 +335,11 @@ export function StevePreview({ previewOptions = defaultPreviewOptions }: { previ
         Open Preview
       </button>
       {opts.targetHud && (
-        <div className="pointer-events-none absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-[10px] font-medium text-emerald-400">
+        <div className="pointer-events-none absolute bottom-2 left-2 rounded bg-black/60 px-2 py-1 text-[10px] font-medium text-primary">
           Target HUD
         </div>
       )}
     </div>
   );
 }
+

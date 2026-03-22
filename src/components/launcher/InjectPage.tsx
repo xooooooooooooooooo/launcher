@@ -101,7 +101,7 @@ const InjectPage = ({
             </div>
             <div className="flex flex-col items-end gap-1">
               <div className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                <div className="h-1.5 w-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
                 <span className="text-[10px] font-mono tracking-widest text-white/40 uppercase">SYS: {status.toUpperCase()}</span>
               </div>
               <span className="text-[10px] font-mono tracking-widest text-white/20 uppercase">
@@ -154,11 +154,7 @@ const InjectPage = ({
           </div>
         )}
 
-        {backendOnline && availableDlls.length === 0 && backendStatus?.dllFolderExists && (
-          <div className="mb-6 rounded-lg border border-orange-500/30 bg-orange-500/10 p-4">
-            <p className="text-sm text-orange-400">No DLL files in dll folder. Place DLLs in: {backendStatus?.dllFolder}</p>
-          </div>
-        )}
+
 
         <div className={`flex flex-col flex-1 min-h-0 ${theme === "professional" ? "mb-4" : "mb-6"}`}>
           <div className={`flex items-center justify-between mb-3 px-2 ${theme === "professional" ? "mb-6" : ""}`}>
@@ -203,7 +199,7 @@ const InjectPage = ({
                             
                             {/* Scanning line effect */}
                             <motion.div 
-                              className="absolute top-0 bottom-0 left-0 w-[1px] bg-emerald-400/50 shadow-[0_0_8px_rgba(52,211,153,0.8)] pointer-events-none"
+                              className="absolute top-0 bottom-0 left-0 w-[1px] bg-primary/50 shadow-[0_0_8px_hsl(var(--primary)/0.8)] pointer-events-none"
                               animate={{ top: ["0%", "100%", "0%"] }}
                               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                             />
@@ -211,12 +207,12 @@ const InjectPage = ({
                         )}
                         
                         <div className="flex items-center gap-4 min-w-0 relative z-10">
-                          <Cpu className={`h-4 w-4 shrink-0 transition-colors ${isSelected ? "text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.5)]" : "text-white/30 group-hover:text-white/50"}`} />
+                          <Cpu className={`h-4 w-4 shrink-0 transition-colors ${isSelected ? "text-primary drop-shadow-[0_0_5px_hsl(var(--primary)/0.5)]" : "text-white/30 group-hover:text-white/50"}`} />
                           <span className={`text-xs font-mono tracking-wider truncate uppercase transition-colors`}>
                             {proc.displayName || proc.name}
                           </span>
                         </div>
-                        <span className={`text-[10px] font-mono tracking-widest w-12 text-right uppercase transition-colors relative z-10 ${isSelected ? "text-emerald-400 font-bold drop-shadow-[0_0_5px_rgba(52,211,153,0.3)]" : "text-white/30"}`}>
+                        <span className={`text-[10px] font-mono tracking-widest w-12 text-right uppercase transition-colors relative z-10 ${isSelected ? "text-primary font-bold drop-shadow-[0_0_5px_hsl(var(--primary)/0.3)]" : "text-white/30"}`}>
                           {proc.pid}
                         </span>
                       </button>
@@ -268,7 +264,7 @@ const InjectPage = ({
                     backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px)"
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-400/5 to-transparent h-[10%] w-full animate-scanline pointer-events-none z-10 mix-blend-screen" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent h-[10%] w-full animate-scanline pointer-events-none z-10 mix-blend-screen" />
 
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 p-4 opacity-20 pointer-events-none z-0">
@@ -281,7 +277,7 @@ const InjectPage = ({
                 </div>
 
                 <div className="flex items-center gap-3 mb-8">
-                  <Activity className="h-5 w-5 text-emerald-400" />
+                  <Activity className="h-5 w-5 text-primary" />
                   <h3 className="text-sm font-mono font-bold tracking-[0.2em] text-white uppercase">Selected Target</h3>
                 </div>
 
@@ -294,12 +290,12 @@ const InjectPage = ({
                       </div>
                       <div className="flex flex-col gap-1 z-10">
                         <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase">PID</span>
-                        <span className="text-sm font-mono text-emerald-400 uppercase drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]">{selectedProcess.pid}</span>
+                        <span className="text-sm font-mono text-primary uppercase drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]">{selectedProcess.pid}</span>
                       </div>
                       <div className="flex flex-col gap-1 z-10">
                         <span className="text-[10px] font-mono tracking-widest text-white/30 uppercase">Status</span>
                         <span className="text-sm font-mono text-white/70 uppercase flex items-center gap-2">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                           Running
                         </span>
                       </div>
@@ -315,7 +311,7 @@ const InjectPage = ({
                               fill="none" 
                               stroke="currentColor" 
                               strokeWidth="1" 
-                              className="text-emerald-400"
+                              className="text-primary"
                               initial={{ strokeDasharray: 100, strokeDashoffset: 100 }}
                               animate={{ strokeDashoffset: [100, 0] }}
                               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -329,13 +325,13 @@ const InjectPage = ({
                     <div className="mt-8 border-t border-white/[0.05] pt-6 flex flex-col gap-4 z-10">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-mono font-bold tracking-[0.2em] text-white uppercase">Payload Terminal</span>
-                        <div className={`h-2 w-2 rounded-full ${status === 'ready' || status === 'success' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500 animate-pulse w-full max-w-[8px]'}`} />
+                        <div className={`h-2 w-2 rounded-full ${status === 'ready' || status === 'success' ? 'bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]' : 'bg-red-500 animate-pulse w-full max-w-[8px]'}`} />
                       </div>
                       
                       {/* Terminal window with typewriter effect */}
                       <div 
                         ref={scrollRef}
-                        className="bg-black/90 font-mono text-[10px] text-emerald-400/80 p-4 rounded-sm border border-white/[0.05] h-24 overflow-y-auto custom-scrollbar flex flex-col shadow-[inset_0_0_15px_rgba(0,0,0,1)] relative"
+                        className="bg-black/90 font-mono text-[10px] text-primary/80 p-4 rounded-sm border border-white/[0.05] h-24 overflow-y-auto custom-scrollbar flex flex-col shadow-[inset_0_0_15px_rgba(0,0,0,1)] relative"
                       >
                         {typedLogs.map((log, idx) => {
                           const isLast = idx === typedLogs.length - 1;
@@ -383,7 +379,7 @@ const InjectPage = ({
                     className={`relative overflow-hidden flex h-12 w-48 items-center justify-center gap-3 font-mono text-[13px] font-bold uppercase tracking-[0.2em] transition-all duration-300 rounded-sm ${canInject && status !== "success"
                         ? "bg-white text-black hover:bg-neutral-200"
                         : status === "success"
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-normal cursor-default"
+                          ? "bg-primary/20 text-primary border border-primary/30 font-normal cursor-default"
                           : "bg-white/5 text-white/30 border border-white/10 cursor-not-allowed"
                       }`}
                   >
@@ -438,8 +434,8 @@ const InjectPage = ({
                   )}
                   {status === "success" && (
                     <>
-                      <CheckCircle2 className="h-8 w-8 text-emerald-400" />
-                      <span className="text-xs font-black uppercase tracking-widest text-emerald-400 drop-shadow-sm">Success</span>
+                      <CheckCircle2 className="h-8 w-8 text-primary" />
+                      <span className="text-xs font-black uppercase tracking-widest text-primary drop-shadow-sm">Success</span>
                     </>
                   )}
                   {status === "error" && (
@@ -461,7 +457,7 @@ const InjectPage = ({
                 className={`relative overflow-hidden flex items-center justify-center gap-2 font-display text-[15px] font-bold uppercase transition-all duration-300 rounded-2xl h-14 w-full max-w-sm tracking-widest ${canInject && status !== "success"
                     ? "bg-gradient-to-r from-primary via-primary/80 to-primary text-primary-foreground shadow-[0_15px_30px_rgba(255,180,0,0.2)] hover:shadow-[0_20px_40px_rgba(255,180,0,0.3)] cursor-pointer"
                     : status === "success"
-                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 cursor-default shadow-[inset_0_0_20px_rgba(52,211,153,0.1)]"
+                      ? "bg-primary/10 text-primary border border-primary/20 cursor-default shadow-[inset_0_0_20px_hsl(var(--primary)/0.1)]"
                       : "bg-white/5 text-white/30 cursor-not-allowed border border-white/10"
                   }`}
               >
@@ -488,3 +484,4 @@ const InjectPage = ({
 };
 
 export default InjectPage;
+

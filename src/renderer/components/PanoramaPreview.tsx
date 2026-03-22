@@ -5,7 +5,7 @@ import type { ScenePack, SceneEntity, ScreenEntity, ConfigSchema } from "../prev
 import { ConfigPanel } from "./ConfigPanel";
 import { ModuleSelector } from "./ModuleSelector";
 
-const SKYBOX_BASE = "/assets/skybox";
+const SKYBOX_BASE = "./assets/skybox";
 
 function buildPackFromRaw(
   raw: any,
@@ -218,7 +218,7 @@ export function PanoramaPreview() {
       cleanupFns.push(() => clearInterval(scenePoll));
     } else {
       // Non-Electron dev fallback
-      const devScenePath = "/assets/scenes/PlayerESP/scene_20260315_201309";
+      const devScenePath = "./assets/scenes/PlayerESP/scene_20260315_201309";
       fetch(devScenePath + "/scene.json")
         .then((r) => r.json())
         .then((raw) => {

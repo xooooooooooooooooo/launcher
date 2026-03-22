@@ -109,7 +109,7 @@ export const ProfessionalHeader: React.FC<HeaderProps> = ({
 
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
-          <div className={`h-2 w-2 rounded-full ${backendOnline ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"}`} />
+          <div className={`h-2 w-2 rounded-full ${backendOnline ? "bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"}`} />
           <span className="text-[10px] font-mono tracking-widest text-white/40 uppercase">
             {backendOnline ? "SYS: ON" : "SYS: ERR"}
           </span>
@@ -171,4 +171,5 @@ export const ProfessionalHeader: React.FC<HeaderProps> = ({
     </header>
   );
 };
+
 

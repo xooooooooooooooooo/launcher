@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Coins, User, Calendar, TrendingUp, ExternalLink, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import ProfileBadges from "@/components/launcher/ProfileBadges";
 
 const WEBSITE_URL = import.meta.env.VITE_WEBSITE_URL as string | undefined;
 
@@ -22,6 +23,7 @@ interface ProfilePageProps {
 
 const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus = null }: ProfilePageProps) => {
     const [profile, setProfile] = useState<ProfileData | null>(profileProp ?? null);
+    const [roles, setRoles] = useState<string[]>([]);
     const [loading, setLoading] = useState(!profileProp && !user);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -40,13 +42,21 @@ const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus =
         }
         const fetchProfile = async () => {
             setRefreshing(true);
-            const { data } = await supabase
-                .from("profiles")
-                .select("username, hades_coins, created_at, subscription_end_date, avatar_url")
-                .eq("user_id", userId)
-                .single();
+            const [profileRes, rolesRes] = await Promise.all([
+                supabase
+                    .from("profiles")
+                    .select("username, hades_coins, created_at, subscription_end_date, avatar_url")
+                    .eq("user_id", userId)
+                    .single(),
+                supabase
+                    .from("user_roles")
+                    .select("role")
+                    .eq("user_id", userId)
+            ]);
+            
             setRefreshing(false);
-            if (data) setProfile(data);
+            if (profileRes.data) setProfile(profileRes.data);
+            if (rolesRes.data) setRoles(rolesRes.data.map((r: any) => r.role));
         };
         fetchProfile();
     }, [userId]);
@@ -84,7 +94,7 @@ const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus =
                 <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                     <h2 className="text-2xl font-bold font-display tracking-tight text-white">Profile</h2>
                     <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             Connected to website account
                         </span>
@@ -125,12 +135,20 @@ const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus =
                             <h3 className="text-3xl font-display font-bold text-white mb-1">
                                 {profile?.username ?? "User"}
                             </h3>
-                            <div className="flex items-center gap-4 mt-3">
+                            <div className="flex items-center gap-4 mt-3 mb-4">
                                 <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5 text-xs text-muted-foreground">
                                     <Calendar className="w-3 h-3 text-primary" />
                                     <span>Joined {new Date(profile?.created_at || Date.now()).toLocaleDateString()}</span>
                                 </div>
                             </div>
+
+                            {/* Badges Display */}
+                            <ProfileBadges 
+                                roles={roles}
+                                createdAt={profile?.created_at || new Date().toISOString()}
+                                hasSubscription={!!(licenseStatus?.active || licenseStatus?.unlimited)}
+                                userId={userId}
+                            />
                         </div>
                     </div>
                 </div>
@@ -161,10 +179,10 @@ const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus =
                         if (licenseStatus?.unlimited) {
                             return (
                                 <div>
-                                    <div className="text-3xl font-display font-bold text-emerald-400 drop-shadow-[0_0_12px_rgba(52,211,153,0.4)]">
+                                    <div className="text-3xl font-display font-bold text-primary drop-shadow-[0_0_12px_hsl(var(--primary)/0.4)]">
                                         Unlimited
                                     </div>
-                                    <div className="text-xs text-emerald-400/80 mt-1 flex items-center gap-1.5 font-medium tracking-wide">
+                                    <div className="text-xs text-primary/80 mt-1 flex items-center gap-1.5 font-medium tracking-wide">
                                         <CheckCircle2 className="w-3.5 h-3.5" />
                                         Lifetime Access
                                     </div>
@@ -172,10 +190,12 @@ const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus =
                             );
                         }
 
-                        if (!profile?.subscription_end_date) {
+                        const expirationString = licenseStatus?.expires_at || profile?.subscription_end_date;
+                        
+                        if (!expirationString) {
                             return <div className="text-3xl font-display font-bold text-muted-foreground">Inactive</div>;
                         }
-                        const end = new Date(profile.subscription_end_date);
+                        const end = new Date(expirationString);
                         const now = new Date();
                         const diffTime = end.getTime() - now.getTime();
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -203,3 +223,4 @@ const ProfilePage = ({ profile: profileProp = null, user = null, licenseStatus =
 };
 
 export default ProfilePage;
+

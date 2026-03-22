@@ -8,6 +8,8 @@ import ChangelogPage from "@/components/launcher/ChangelogPage";
 import SettingsPage from "@/components/launcher/SettingsPage";
 import { ShaderBackground } from "@/components/launcher/ShaderBackground";
 import { useSettings } from "@/context/SettingsContext";
+import DebugReport from "@/components/launcher/DebugReport";
+import AutoUpdater from "@/components/launcher/AutoUpdater";
 import launcherBg from "@/assets/launcher-bg.jpg";
 
 const API_HOST = "http://localhost";
@@ -70,8 +72,12 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null);
   const [licenseStatus, setLicenseStatus] = useState<LicenseStatus | null>(null);
   const [availableDlls, setAvailableDlls] = useState<DllFile[]>([]);
-  const [selectedDll, setSelectedDll] = useState<string>("");
+  const [selectedDll, setSelectedDll] = useState<string>("hades.dll");
   const [apiBaseUrl, setApiBaseUrl] = useState<string>(`${API_HOST}:5000`);
+  const [debugReport, setDebugReport] = useState<{
+    success: boolean; message: string; backendSteps: string[]; frontendSteps: string[]; timestamp: string; duration: number;
+  } | null>(null);
+  const [showDebugReport, setShowDebugReport] = useState(false);
 
   const fetchWithTimeout = React.useCallback(async (url: string, init: RequestInit | undefined, timeoutMs: number) => {
     const controller = new AbortController();
@@ -168,21 +174,29 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
 
         if (cancelled) return;
 
-        if (res.ok) {
-          setLicenseStatus({
-            active: !!data.active,
-            unlimited: !!data.unlimited,
-            expires_at: data.expires_at ?? null,
-          });
-        } else {
+        if (!res.ok) {
+          try {
+            const errData = await res.json();
+            throw new Error(errData.message || errData.error || `HTTP ${res.status}`);
+          } catch {
+            throw new Error(`HTTP ${res.status}`);
+          }
+        }
+
+        setLicenseStatus({
+          active: !!data.active,
+          unlimited: !!data.unlimited,
+          expires_at: data.expires_at ?? null,
+        });
+      } catch (err: any) {
+        if (!cancelled) {
           setLicenseStatus({
             active: false,
             unlimited: false,
-            expires_at: data.expires_at ?? null,
+            expires_at: null,
           });
+          import("sonner").then(({ toast }) => toast.error(`License check failed: ${err.message}`));
         }
-      } catch {
-        if (!cancelled) setLicenseStatus(null);
       }
     };
 
@@ -217,6 +231,34 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
 
   const { settings } = useSettings();
   const theme = (settings.launcherTheme ?? "default") as "default" | "minimal" | "professional" | "shader" | "vanguard";
+
+  const hexToHslString = (hex: string) => {
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+      r = parseInt(hex[1] + hex[1], 16);
+      g = parseInt(hex[2] + hex[2], 16);
+      b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length === 7) {
+      r = parseInt(hex.slice(1, 3), 16);
+      g = parseInt(hex.slice(3, 5), 16);
+      b = parseInt(hex.slice(5, 7), 16);
+    }
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+  };
+  const primaryHsl = settings.primaryColor ? hexToHslString(settings.primaryColor) : "0 0% 100%";
 
   useEffect(() => {
     if (ipcRenderer) {
@@ -267,15 +309,25 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
     }
     setStatus("injecting");
     setErrorMessage("");
+    const feSteps: string[] = [];
+    const startTime = performance.now();
+    const feLog = (msg: string) => feSteps.push(`[${Math.round(performance.now() - startTime).toString().padStart(5)}ms] ${msg}`);
+
     try {
+      feLog("Injection started");
       const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (session?.access_token) headers["Authorization"] = `Bearer ${session.access_token}`;
+      if (session?.access_token) {
+        headers["Authorization"] = `Bearer ${session.access_token}`;
+        feLog(`Auth token attached (${session.access_token.length} chars)`);
+      } else {
+        feLog("No auth token — proceeding without authentication");
+      }
       
       let base64Dll = "";
-      let payloadName = selectedDll || "fallback-memory.dll";
+      let payloadName = selectedDll || "hades.dll";
 
-      if (dllPayload) {
-        // Convert raw DLL ArrayBuffer to Base64 instantly using native Blob parser
+      if (dllPayload && !settings.useLocalFallback) {
+        feLog(`Encoding cloud DLL to Base64: ${dllPayload.name} (${(dllPayload.buffer.byteLength / 1024).toFixed(0)} KB)`);
         const blob = new Blob([dllPayload.buffer]);
         base64Dll = await new Promise<string>((resolve) => {
           const reader = new FileReader();
@@ -286,7 +338,15 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
           reader.readAsDataURL(blob);
         });
         payloadName = dllPayload.name;
+        feLog(`Base64 encoded: ${(base64Dll.length / 1024).toFixed(0)} KB`);
+      } else if (dllPayload && settings.useLocalFallback) {
+        feLog("Cloud DLL available but useLocalFallback is ON — using local DLL");
+      } else {
+        feLog("No cloud DLL in memory — backend will use local fallback");
       }
+
+      feLog(`Sending POST to ${API_URL}/inject`);
+      feLog(`Payload: PID=${process.pid}, name=${payloadName}, ephemeral=${!!base64Dll}, bytes=${base64Dll.length > 0 ? (base64Dll.length / 1024).toFixed(0) + 'KB' : 'none'}`);
 
       const response = await fetch(`${API_URL}/inject`, {
         method: "POST",
@@ -295,10 +355,25 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
           processId: process.pid, 
           dllName: payloadName,
           dllBytesBase64: base64Dll,
-          ephemeral: !!base64Dll // If we are sending bytes, force ephemeral mode
+          ephemeral: !!base64Dll,
+          requireSubscription: settings.requireSubscription
         }),
       });
+      feLog(`Backend responded: HTTP ${response.status}`);
       const data = await response.json();
+      feLog(`Result: ${data.success ? "SUCCESS" : "FAILED"} — ${data.message || data.error || '(no message)'}`);
+
+      const elapsed = Math.round(performance.now() - startTime);
+      setDebugReport({
+        success: data.success,
+        message: data.message || data.error || "Unknown",
+        backendSteps: data.steps || [],
+        frontendSteps: feSteps,
+        timestamp: new Date().toLocaleString(),
+        duration: elapsed,
+      });
+      setShowDebugReport(true);
+
       if (data.success) {
         setStatus("success");
         import("sonner").then(({ toast }) => toast.success(data.message || "Injection successful!"));
@@ -309,13 +384,26 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
         setTimeout(() => (selectedProcess ? setStatus("ready") : setStatus("searching")), 5000);
       }
     } catch (err: any) {
+      let msg = err.message;
+      if (msg === "fetch failed" || msg.includes("Failed to fetch")) msg += " (Is the Dotnet Backend running?)";
+      feLog(`✘ EXCEPTION: ${msg}`);
+      const elapsed = Math.round(performance.now() - startTime);
+      setDebugReport({
+        success: false,
+        message: msg,
+        backendSteps: [],
+        frontendSteps: feSteps,
+        timestamp: new Date().toLocaleString(),
+        duration: elapsed,
+      });
+      setShowDebugReport(true);
       setStatus("error");
-      setErrorMessage(err.message || "Failed to inject");
+      setErrorMessage(msg);
       setTimeout(() => (selectedProcess ? setStatus("ready") : setStatus("searching")), 5000);
     }
   };
 
-  const canInject = status === "ready" && backendOnline && !!selectedProcess && !!selectedDll && !!session?.access_token;
+  const canInject = status === "ready" && backendOnline && !!selectedProcess && !!selectedDll;
 
   const handleInjectClick = () => {
     // Make the button actionable even when "disabled" so users see the reason.
@@ -326,10 +414,13 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       return;
     }
     if (!selectedDll) {
-      setStatus("error");
-      setErrorMessage("No DLL selected. Put a DLL into the backend dll folder or download a DLL first.");
-      return;
+      // No cloud DLL synced — the backend will find the local DLL automatically
+      setSelectedDll("hades.dll");
     }
+    
+    
+    // Cloud sync is optional — backend will fall back to local DLL if no bytes are sent
+
     if (!selectedProcess) {
       setStatus("error");
       setErrorMessage("No target process detected/selected. Start the game/app first, then select it.");
@@ -373,6 +464,16 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
   const windowRadius = isVanguard ? "2.5rem" : "1.25rem";
   const clipPath = `inset(0 round ${windowRadius})`;
   return (
+    <>
+    <style suppressHydrationWarning>{`
+      .theme-professional {
+        --primary: ${primaryHsl};
+        --ring: ${primaryHsl};
+        --gold: ${primaryHsl};
+        --gold-light: ${primaryHsl};
+        --gold-dark: ${primaryHsl};
+      }
+    `}</style>
     <div
       className={`flex h-full w-full min-h-0 min-w-0 min-h-screen ${theme === "professional" ? "theme-professional" : ""}`}
       style={{
@@ -590,6 +691,9 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
         )}
       </motion.div>
     </div>
+    <DebugReport open={showDebugReport} onClose={() => setShowDebugReport(false)} report={debugReport} />
+    <AutoUpdater />
+    </>
   );
 };
 

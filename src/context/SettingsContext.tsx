@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type SettingKey = "autoInject" | "stealthMode" | "startMinimized" | "checkUpdates";
+export type SettingKey = "autoInject" | "stealthMode" | "startMinimized" | "checkUpdates" | "useCloudSync" | "useBetaPayload" | "requireSubscription" | "useLocalFallback";
 
 /** Launcher appearance theme. "shader" = premium animated background, "vanguard" = cinematic 3D layout. */
 export type LauncherTheme = "default" | "minimal" | "professional" | "shader" | "vanguard";
@@ -11,12 +11,18 @@ export type ShaderPresetId = "gold-orbs" | "stars" | "aurora" | "waves";
 export interface SettingsState {
     autoInject: boolean;
     stealthMode: boolean;
+    useCloudSync: boolean;
+    useBetaPayload: boolean;
+    requireSubscription: boolean;
+    useLocalFallback: boolean;
     startMinimized: boolean;
     checkUpdates: boolean;
     /** Launcher UI theme (default, minimal, or premium shader). */
     launcherTheme: LauncherTheme;
     /** Which shader to show when launcherTheme is "shader". */
     shaderPreset: ShaderPresetId;
+    /** Custom hex color for the professional theme primary accent. */
+    primaryColor: string;
 }
 
 interface SettingsContextType {
@@ -24,15 +30,21 @@ interface SettingsContextType {
     updateSetting: (key: SettingKey, value: boolean) => void;
     setLauncherTheme: (theme: LauncherTheme) => void;
     setShaderPreset: (preset: ShaderPresetId) => void;
+    setPrimaryColor: (color: string) => void;
 }
 
 const defaultSettings: SettingsState = {
     autoInject: false,
     stealthMode: true,
+    useCloudSync: true,
+    useBetaPayload: false,
+    requireSubscription: true,
+    useLocalFallback: false,
     startMinimized: false,
     checkUpdates: true,
-    launcherTheme: "default",
+    launcherTheme: "professional",
     shaderPreset: "gold-orbs",
+    primaryColor: "#ffffff",
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -48,6 +60,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
                     ...parsed,
                     launcherTheme: (parsed.launcherTheme as LauncherTheme) ?? defaultSettings.launcherTheme,
                     shaderPreset: (parsed.shaderPreset as SettingsState["shaderPreset"]) ?? defaultSettings.shaderPreset,
+                    primaryColor: parsed.primaryColor ?? defaultSettings.primaryColor,
                 };
             }
         } catch (e) {
@@ -76,8 +89,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         setSettings((prev) => ({ ...prev, shaderPreset }));
     };
 
+    const setPrimaryColor = (primaryColor: string) => {
+        setSettings((prev) => ({ ...prev, primaryColor }));
+    };
+
     return (
-        <SettingsContext.Provider value={{ settings, updateSetting, setLauncherTheme, setShaderPreset }}>
+        <SettingsContext.Provider value={{ settings, updateSetting, setLauncherTheme, setShaderPreset, setPrimaryColor }}>
             {children}
         </SettingsContext.Provider>
     );

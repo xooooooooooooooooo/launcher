@@ -137,7 +137,7 @@ const Sidebar = ({
           {/* Status dot */}
           {backendStatus && (
             <div className="group relative flex items-center justify-center">
-              <div className={`h-2.5 w-2.5 rounded-full border border-black/50 ${backendOnline ? "bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.4)]" : "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.4)]"}`} />
+              <div className={`h-2.5 w-2.5 rounded-full border border-black/50 ${backendOnline ? "bg-primary shadow-[0_0_12px_hsl(var(--primary)/0.4)]" : "bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.4)]"}`} />
               <div className="absolute left-[200%] top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-lg bg-[#111]/90 backdrop-blur-md border border-white/10 text-white/90 text-[10px] font-medium tracking-wide opacity-0 -translate-x-1 pointer-events-none group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shadow-xl whitespace-nowrap z-50">
                 {backendOnline ? "Backend Online" : "Backend Offline"}
               </div>
@@ -221,7 +221,7 @@ const Sidebar = ({
         {backendStatus && (
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[9px]">
             <div className="flex items-center gap-1.5 rounded-full border border-white/5 bg-white/[0.03] px-2 py-0.5">
-              <div className={`h-1 w-1 rounded-full ${backendOnline ? "bg-emerald-400" : "bg-red-400"} animate-pulse`} />
+              <div className={`h-1 w-1 rounded-full ${backendOnline ? "bg-primary" : "bg-red-400"} animate-pulse`} />
               <span className="font-medium text-muted-foreground/80 uppercase tracking-wider">Interface</span>
             </div>
             {backendStatus.dllFolderExists && (
@@ -340,3 +340,4 @@ const Sidebar = ({
 };
 
 export default Sidebar;
+

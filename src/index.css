@@ -352,7 +352,7 @@
 /* Typewriter Cursor Blink */
 @keyframes blink {
   0%, 100% { opacity: 1; border-color: transparent; }
-  50% { opacity: 1; border-color: rgba(52, 211, 153, 0.7); }
+  50% { opacity: 1; border-color: hsl(var(--primary) / 0.7); }
 }
 
 .animate-blink {

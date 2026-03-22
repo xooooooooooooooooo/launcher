@@ -262,7 +262,7 @@ ipcMain.handle('inject-dll', async (event, dllPath, processName) => {
         processName: processName,
         dllPath: dllPath
       }),
-      signal: AbortSignal.timeout(30000)
+      signal: AbortSignal.timeout(120000)
     });
     
     if (!response.ok) {
