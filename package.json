@@ -12,9 +12,10 @@
     "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "electron:start": "electron .",
     "build": "vite build",
-    "build:backend": "cd backend && dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:AssemblyName=backend -o ../dist-backend",
+    "build:backend": "cd backend && dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:PublishTrimmed=true -p:AssemblyName=backend -o ../dist-backend",
+    "type-check": "tsc --noEmit",
     "preview": "vite preview",
-    "package": "npm run build && npm run build:backend && electron-builder --config electron-builder.config.cjs"
+    "package": "npm run type-check && npm run build && npm run build:backend && javascript-obfuscator main.js --output build-temp/main.js --compact true --control-flow-flattening true --string-array true --string-array-encoding base64 && electron-builder --config electron-builder.config.cjs"
   },
   "keywords": [
     "electron",

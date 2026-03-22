@@ -12,7 +12,11 @@ module.exports = {
   appId: 'com.hades.launcher',
   productName: 'Hades Launcher',
   directories: { output: 'dist-electron' },
-  files: ['dist/**/*', 'main.js', 'public/icon.png'],
+  files: [
+    'dist/**/*', 
+    { from: 'build-temp', to: '.', filter: ['main.js'] }, 
+    'public/icon.png'
+  ],
   icon: 'public/icon.png',
   extraResources: [
     ...(hasPreview ? [{ from: 'resources/preview.exe', to: 'preview.exe' }] : []),
