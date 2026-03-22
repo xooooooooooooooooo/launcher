@@ -9,7 +9,6 @@ import SettingsPage from "@/components/launcher/SettingsPage";
 import { ShaderBackground } from "@/components/launcher/ShaderBackground";
 import { useSettings } from "@/context/SettingsContext";
 import DebugReport from "@/components/launcher/DebugReport";
-import AutoUpdater from "@/components/launcher/AutoUpdater";
 import launcherBg from "@/assets/launcher-bg.jpg";
 
 const API_HOST = "http://localhost";
@@ -692,7 +691,6 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       </motion.div>
     </div>
     <DebugReport open={showDebugReport} onClose={() => setShowDebugReport(false)} report={debugReport} />
-    <AutoUpdater />
     </>
   );
 };

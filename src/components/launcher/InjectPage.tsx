@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Zap, CheckCircle2, AlertCircle, Loader2, Shield, Cpu, Terminal, Activity } from "lucide-react";
 import type { Status, Process, DllFile, BackendStatus } from "@/pages/Index";
 
+const isElectron = typeof window !== "undefined" && (window as any).require;
+const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
+
 interface InjectPageProps {
   status: Status;
   processes: Process[];
@@ -41,6 +44,30 @@ const InjectPage = ({
   // Typewriter effect state
   const [typedLogs, setTypedLogs] = React.useState<string[]>([]);
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  // Auto Updater State
+  const [updateReady, setUpdateReady] = React.useState(false);
+  const [updateVersion, setUpdateVersion] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!ipcRenderer) return;
+    const onAvailable = (_: any, info: any) => {
+      setUpdateVersion(info.version);
+    };
+    const onDownloaded = () => {
+      setUpdateReady(true);
+    };
+    ipcRenderer.on("updater:available", onAvailable);
+    ipcRenderer.on("updater:downloaded", onDownloaded);
+    return () => {
+      ipcRenderer.removeListener("updater:available", onAvailable);
+      ipcRenderer.removeListener("updater:downloaded", onDownloaded);
+    };
+  }, []);
+
+  const handleRestartInstall = () => {
+    if (ipcRenderer) ipcRenderer.invoke("app:quit-and-install");
+  };
 
   // Auto-scroll terminal and handle typing simulation
   React.useEffect(() => {
@@ -86,6 +113,33 @@ const InjectPage = ({
       transition={{ duration: 0.3 }}
       className="flex min-h-0 flex-1 flex-col overflow-hidden select-none"
     >
+      {/* Update Notification */}
+      {updateVersion && (
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="mb-4 shrink-0 rounded border border-primary/50 bg-primary/10 p-3 flex flex-col sm:flex-row gap-3 sm:gap-0 items-start sm:items-center justify-between shadow-[0_0_15px_hsl(var(--primary)/0.15)]"
+        >
+          <div className="flex items-center gap-3">
+            <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+            <div>
+              <h3 className="text-sm font-bold text-white tracking-wide">Update v{updateVersion} Discovered</h3>
+              <p className="text-xs text-white/50 tracking-wide font-mono mt-0.5">
+                {updateReady ? "Download complete. Ready for integration." : "Downloading background payload..."}
+              </p>
+            </div>
+          </div>
+          {updateReady && (
+            <button
+              onClick={handleRestartInstall}
+              className="px-4 py-2 w-full sm:w-auto rounded bg-primary text-primary-foreground font-bold tracking-widest uppercase text-[10px] hover:brightness-125 transition-all shadow-[0_0_10px_hsl(var(--primary)/0.4)]"
+            >
+              Restart & Install
+            </button>
+          )}
+        </motion.div>
+      )}
+
       {/* Hero */}
       <div className={`shrink-0 ${theme === "professional" ? "px-0 mb-6 border-b border-white/[0.05] pb-4" : "px-1 mb-5"}`}>
         {theme === "professional" ? (

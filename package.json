@@ -1,6 +1,6 @@
 {
   "name": "hades-injector",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Hades Client Launcher - Desktop App",
   "main": "main.js",
   "scripts": {
