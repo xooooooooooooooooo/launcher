@@ -9,9 +9,62 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace Launcher.API
 {
+    public class TargetProcess
+    {
+        public int pid { get; set; }
+        public string name { get; set; } = "";
+        public string displayName { get; set; } = "";
+        public string mainWindowTitle { get; set; } = "";
+    }
+
+    public class ApiResponse
+    {
+        public bool? success { get; set; }
+        public string? message { get; set; }
+        public string? error { get; set; }
+        public string? status { get; set; }
+        public string? version { get; set; }
+        public bool? exists { get; set; }
+        public List<TargetProcess>? processes { get; set; }
+        public List<string>? dlls { get; set; }
+        public List<string>? steps { get; set; }
+    }
+
+    public class StatusResponse
+    {
+        public bool success { get; set; }
+        public string version { get; set; } = "";
+        public bool hasAdminPrivileges { get; set; }
+        public string dllFolder { get; set; } = "";
+        public bool dllFolderExists { get; set; }
+        public int dllCount { get; set; }
+    }
+
+    public class DllInfo
+    {
+        public string name { get; set; } = "";
+        public string path { get; set; } = "";
+        public long size { get; set; }
+    }
+
+    public class DllListResponse 
+    {
+        public bool success { get; set; }
+        public string? error { get; set; }
+        public List<DllInfo>? dlls { get; set; }
+    }
+
+    [JsonSerializable(typeof(ApiResponse))]
+    [JsonSerializable(typeof(StatusResponse))]
+    [JsonSerializable(typeof(DllListResponse))]
+    [JsonSerializable(typeof(JsonElement))]
+    internal partial class AppJsonContext : JsonSerializerContext {}
+
     /// <summary>
     /// Simple HTTP API server for the injector
     /// This allows any frontend (including web-based) to communicate with the C# backend
@@ -193,7 +246,7 @@ namespace Launcher.API
 
                     default:
                         response.StatusCode = 404;
-                        responseString = JsonSerializer.Serialize(new { error = "Endpoint not found" });
+                        responseString = JsonSerializer.Serialize(new ApiResponse { error = "Endpoint not found" }, AppJsonContext.Default.ApiResponse);
                         break;
                 }
 
@@ -205,7 +258,7 @@ namespace Launcher.API
             catch (Exception ex)
             {
                 response.StatusCode = 500;
-                var error = JsonSerializer.Serialize(new { error = ex.Message });
+                var error = JsonSerializer.Serialize(new ApiResponse { error = ex.Message }, AppJsonContext.Default.ApiResponse);
                 byte[] buffer = Encoding.UTF8.GetBytes(error);
                 await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
             }
@@ -220,7 +273,7 @@ namespace Launcher.API
             try
             {
                 var processes = Injector.GetJavawProcesses()
-                    .Select(p => new
+                    .Select(p => new TargetProcess
                     {
                         pid = p.Id,
                         name = p.ProcessName,
@@ -229,19 +282,19 @@ namespace Launcher.API
                     })
                     .ToList();
 
-                return JsonSerializer.Serialize(new
+                return JsonSerializer.Serialize(new ApiResponse
                 {
                     success = true,
                     processes = processes
-                });
+                }, AppJsonContext.Default.ApiResponse);
             }
             catch (Exception ex)
             {
-                return JsonSerializer.Serialize(new
+                return JsonSerializer.Serialize(new ApiResponse
                 {
                     success = false,
                     error = ex.Message
-                });
+                }, AppJsonContext.Default.ApiResponse);
             }
         }
 
@@ -279,7 +332,8 @@ namespace Launcher.API
                 string json = Encoding.UTF8.GetString(requestBytes);
                 Log($"Parsed {requestBytes.Length:N0} bytes of JSON");
                 
-                var data = JsonSerializer.Deserialize<JsonElement>(json);
+                using var jsonDoc = JsonDocument.Parse(json);
+                var data = jsonDoc.RootElement;
                 Console.WriteLine("[INJECT] JSON deserialized successfully.");
 
                 // Security: Verify the token and subscription status directly with Supabase Edge Functions.
@@ -303,7 +357,7 @@ namespace Launcher.API
                             if (!verifyDoc.RootElement.TryGetProperty("active", out var activeProp) || !activeProp.GetBoolean())
                             {
                                 Log("✘ Subscription is NOT active — blocking injection");
-                                return JsonSerializer.Serialize(new { success = false, message = "Unauthorized: No active subscription.", steps });
+                                return JsonSerializer.Serialize(new ApiResponse { success = false, message = "Unauthorized: No active subscription.", steps = steps }, AppJsonContext.Default.ApiResponse);
                             }
                             Log("✔ Subscription active");
                         }
@@ -349,11 +403,11 @@ namespace Launcher.API
 
                 if (processId <= 0)
                 {
-                    return JsonSerializer.Serialize(new
+                    return JsonSerializer.Serialize(new ApiResponse
                     {
                         success = false,
                         message = "processId (or pid/processName) is required"
-                    });
+                    }, AppJsonContext.Default.ApiResponse);
                 }
                 string? dllPath = data.TryGetProperty("dllPath", out var pathProp) ? pathProp.GetString() : null;
                 string? dllName = data.TryGetProperty("dllName", out var nameProp) ? nameProp.GetString() : null;
@@ -368,7 +422,7 @@ namespace Launcher.API
                     string dllFolder = GetDllFolderPath();
                     if (!Directory.Exists(dllFolder))
                     {
-                        return JsonSerializer.Serialize(new { success = false, error = "DLL folder not found: " + dllFolder });
+                        return JsonSerializer.Serialize(new ApiResponse { success = false, error = "DLL folder not found: " + dllFolder }, AppJsonContext.Default.ApiResponse);
                     }
                     dllPath = Path.Combine(dllFolder, dllName);
                 }
@@ -376,12 +430,12 @@ namespace Launcher.API
                 if (string.IsNullOrEmpty(dllPath))
                 {
                     Log("✘ No DLL path or name provided");
-                    return JsonSerializer.Serialize(new
+                    return JsonSerializer.Serialize(new ApiResponse
                     {
                         success = false,
                         error = "DLL path or dllName is required",
-                        steps
-                    });
+                        steps = steps
+                    }, AppJsonContext.Default.ApiResponse);
                 }
 
                 // Support frontend sending the DLL in-memory as Base64
@@ -441,12 +495,12 @@ namespace Launcher.API
                             File.AppendAllText(ephemLog, $"Injection result: {injected}\n");
                             sw.Stop();
                             Log($"Total time: {sw.ElapsedMilliseconds}ms");
-                            return JsonSerializer.Serialize(new
+                            return JsonSerializer.Serialize(new ApiResponse
                             {
                                 success = injected,
                                 message = injected ? "Injection successful!" : "LoadLibraryW failed — check debug.log",
-                                steps
-                            });
+                                steps = steps
+                            }, AppJsonContext.Default.ApiResponse);
                         }
 
                         // Normal Mode: Fallback to disk write
@@ -473,7 +527,7 @@ namespace Launcher.API
                     catch (Exception ex)
                     {
                         Log($"✘ Payload processing failed: {ex.Message}");
-                        return JsonSerializer.Serialize(new { success = false, message = "Payload processing failed: " + ex.Message, steps });
+                        return JsonSerializer.Serialize(new ApiResponse { success = false, message = "Payload processing failed: " + ex.Message, steps = steps }, AppJsonContext.Default.ApiResponse);
                     }
                 }
 
@@ -503,7 +557,7 @@ namespace Launcher.API
                         dllPath = found;
                     } else {
                         Log("✘ No DLL found anywhere — cannot inject");
-                        return JsonSerializer.Serialize(new { success = false, message = "No DLL found! Place ClientTest.dll or hades.dll in the backend/dll/ folder or enable Cloud Sync.", steps });
+                        return JsonSerializer.Serialize(new ApiResponse { success = false, message = "No DLL found! Place ClientTest.dll or hades.dll in the backend/dll/ folder or enable Cloud Sync.", steps = steps }, AppJsonContext.Default.ApiResponse);
                     }
                 }
 
@@ -556,12 +610,12 @@ namespace Launcher.API
                 File.AppendAllText(debugLogPath, $"Injection result: {success}\n");
                 sw.Stop();
                 Log($"Total time: {sw.ElapsedMilliseconds}ms");
-                return JsonSerializer.Serialize(new
+                return JsonSerializer.Serialize(new ApiResponse
                 {
                     success = success,
                     message = success ? "Injection successful!" : "Injection failed",
-                    steps
-                });
+                    steps = steps
+                }, AppJsonContext.Default.ApiResponse);
             }
             catch (Exception ex)
             {
@@ -571,13 +625,13 @@ namespace Launcher.API
                 Log($"✘ FATAL: {ex.Message}");
                 sw.Stop();
                 Log($"Total time: {sw.ElapsedMilliseconds}ms");
-                return JsonSerializer.Serialize(new
+                return JsonSerializer.Serialize(new ApiResponse
                 {
                     success = false,
                     message = ex.Message,
                     error = ex.Message,
-                    steps
-                });
+                    steps = steps
+                }, AppJsonContext.Default.ApiResponse);
             }
             finally
             {
@@ -594,60 +648,62 @@ namespace Launcher.API
             {
                 if (request.HttpMethod != "POST")
                 {
-                    return JsonSerializer.Serialize(new { success = false, message = "Method not allowed" });
+                    return JsonSerializer.Serialize(new ApiResponse { success = false, message = "Method not allowed" }, AppJsonContext.Default.ApiResponse);
                 }
 
                 using var reader = new StreamReader(request.InputStream, request.ContentEncoding);
                 string json = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<JsonElement>(json);
+                using var jsonDoc = JsonDocument.Parse(json);
+                var data = jsonDoc.RootElement;
                 string? filePath = data.TryGetProperty("filePath", out var fp) ? fp.GetString() : null;
 
                 if (string.IsNullOrWhiteSpace(filePath))
                 {
-                    return JsonSerializer.Serialize(new { success = false, exists = false, message = "filePath is required" });
+                    return JsonSerializer.Serialize(new ApiResponse { success = false, exists = false, message = "filePath is required" }, AppJsonContext.Default.ApiResponse);
                 }
 
                 bool exists = File.Exists(filePath) || Directory.Exists(filePath);
-                return JsonSerializer.Serialize(new { success = true, exists });
+                return JsonSerializer.Serialize(new ApiResponse { success = true, exists = exists }, AppJsonContext.Default.ApiResponse);
             }
             catch (Exception ex)
             {
-                return JsonSerializer.Serialize(new { success = false, exists = false, message = ex.Message });
+                return JsonSerializer.Serialize(new ApiResponse { success = false, exists = false, message = ex.Message }, AppJsonContext.Default.ApiResponse);
             }
         }
 
         private async Task<string> InjectRemotePayload(HttpListenerRequest request)
         {
             if (request.HttpMethod != "POST")
-                return JsonSerializer.Serialize(new { success = false, message = "Method not allowed" });
+                return JsonSerializer.Serialize(new ApiResponse { success = false, message = "Method not allowed" }, AppJsonContext.Default.ApiResponse);
 
             try
             {
                 using var reader = new StreamReader(request.InputStream, request.ContentEncoding);
                 string json = await reader.ReadToEndAsync();
-                var data = JsonSerializer.Deserialize<JsonElement>(json);
+                using var jsonDoc = JsonDocument.Parse(json);
+                var data = jsonDoc.RootElement;
 
                 int processId = data.TryGetProperty("processId", out var pidProp) && pidProp.ValueKind == JsonValueKind.Number
                     ? pidProp.GetInt32()
                     : 0;
 
                 if (processId <= 0)
-                    return JsonSerializer.Serialize(new { success = false, message = "processId is required" });
+                    return JsonSerializer.Serialize(new ApiResponse { success = false, message = "processId is required" }, AppJsonContext.Default.ApiResponse);
 
                 string? auth = request.Headers["Authorization"];
                 if (string.IsNullOrWhiteSpace(auth) || !auth.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-                    return JsonSerializer.Serialize(new { success = false, message = "Missing Authorization Bearer token" });
+                    return JsonSerializer.Serialize(new ApiResponse { success = false, message = "Missing Authorization Bearer token" }, AppJsonContext.Default.ApiResponse);
 
                 string bearerToken = auth.Substring("Bearer ".Length).Trim();
 
                 string? functionsBaseUrl = Environment.GetEnvironmentVariable("SUPABASE_FUNCTIONS_BASE_URL");
                 if (string.IsNullOrWhiteSpace(functionsBaseUrl))
                 {
-                    return JsonSerializer.Serialize(new
+                    return JsonSerializer.Serialize(new ApiResponse
                     {
                         success = false,
                         message = "Missing SUPABASE_FUNCTIONS_BASE_URL env var (expected like: https://<project-ref>.supabase.co/functions/v1)"
-                    });
+                    }, AppJsonContext.Default.ApiResponse);
                 }
 
                 using var delivery = new PayloadDelivery();
@@ -657,11 +713,11 @@ namespace Launcher.API
                 try
                 {
                     bool ok = Injector.InjectDLL(processId, payload.ClientDllPath);
-                    return JsonSerializer.Serialize(new
+                    return JsonSerializer.Serialize(new ApiResponse
                     {
                         success = ok,
                         message = ok ? "Remote payload injection successful!" : "Remote payload injection failed"
-                    });
+                    }, AppJsonContext.Default.ApiResponse);
                 }
                 finally
                 {
@@ -670,7 +726,7 @@ namespace Launcher.API
             }
             catch (Exception ex)
             {
-                return JsonSerializer.Serialize(new { success = false, message = ex.Message });
+                return JsonSerializer.Serialize(new ApiResponse { success = false, message = ex.Message }, AppJsonContext.Default.ApiResponse);
             }
         }
 
@@ -687,17 +743,17 @@ namespace Launcher.API
                 }
                 catch { /* ignore */ }
             }
-            return JsonSerializer.Serialize(new
+            return JsonSerializer.Serialize(new StatusResponse
             {
                 success = true,
                 version = ApiVersion,
 #pragma warning disable CA1416
                 hasAdminPrivileges = Injector.HasAdminPrivileges(),
 #pragma warning restore CA1416
-                dllFolder,
-                dllFolderExists,
-                dllCount
-            });
+                dllFolder = dllFolder,
+                dllFolderExists = dllFolderExists,
+                dllCount = dllCount
+            }, AppJsonContext.Default.StatusResponse);
         }
 
         private string GetDlls()
@@ -707,30 +763,30 @@ namespace Launcher.API
                 string dllFolder = GetDllFolderPath();
                 if (!Directory.Exists(dllFolder))
                 {
-                    return JsonSerializer.Serialize(new
+                    return JsonSerializer.Serialize(new DllListResponse
                     {
                         success = false,
                         error = "DLL folder not found",
-                        dlls = Array.Empty<object>()
-                    });
+                        dlls = new List<DllInfo>()
+                    }, AppJsonContext.Default.DllListResponse);
                 }
                 var dlls = Directory.GetFiles(dllFolder, "*.dll", SearchOption.TopDirectoryOnly)
                     .Select(f =>
                     {
                         var fi = new FileInfo(f);
-                        return new { name = fi.Name, path = fi.FullName, size = fi.Length };
+                        return new DllInfo { name = fi.Name, path = fi.FullName, size = fi.Length };
                     })
                     .ToList();
-                return JsonSerializer.Serialize(new { success = true, dlls });
+                return JsonSerializer.Serialize(new DllListResponse { success = true, dlls = dlls }, AppJsonContext.Default.DllListResponse);
             }
             catch (Exception ex)
             {
-                return JsonSerializer.Serialize(new
+                return JsonSerializer.Serialize(new DllListResponse
                 {
                     success = false,
                     error = ex.Message,
-                    dlls = Array.Empty<object>()
-                });
+                    dlls = new List<DllInfo>()
+                }, AppJsonContext.Default.DllListResponse);
             }
         }
     }
