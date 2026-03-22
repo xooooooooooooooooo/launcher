@@ -452,10 +452,6 @@ app.whenReady().then(() => {
   // Initial check (DLLs)
   checkForUpdates();
 
-  if (app.isPackaged) {
-    autoUpdater.checkForUpdates();
-  }
-
   // Periodic check (every 5 minutes)
   setInterval(() => {
     checkForUpdates();

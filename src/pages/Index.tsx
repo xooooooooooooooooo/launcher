@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minimize } from "lucide-react";
+import { X, Minimize, Zap } from "lucide-react";
 import Sidebar from "@/components/launcher/Sidebar";
 import InjectPage from "@/components/launcher/InjectPage";
 import ConfigPage from "@/components/launcher/ConfigPage";
@@ -77,6 +77,35 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
     success: boolean; message: string; backendSteps: string[]; frontendSteps: string[]; timestamp: string; duration: number;
   } | null>(null);
   const [showDebugReport, setShowDebugReport] = useState(false);
+
+  // Auto Updater Global State
+  const [updateReady, setUpdateReady] = useState(false);
+  const [updateVersion, setUpdateVersion] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!ipcRenderer) return;
+
+    // Trigger update check on app mount
+    ipcRenderer.invoke("app:check-updates");
+
+    const onAvailable = (_: any, info: any) => {
+      setUpdateVersion(info.version);
+      // Start download transparently in background
+      ipcRenderer.invoke("app:download-update");
+    };
+    
+    const onDownloaded = () => {
+      setUpdateReady(true);
+    };
+
+    ipcRenderer.on("updater:available", onAvailable);
+    ipcRenderer.on("updater:downloaded", onDownloaded);
+    
+    return () => {
+      ipcRenderer.removeListener("updater:available", onAvailable);
+      ipcRenderer.removeListener("updater:downloaded", onDownloaded);
+    };
+  }, []);
 
   const fetchWithTimeout = React.useCallback(async (url: string, init: RequestInit | undefined, timeoutMs: number) => {
     const controller = new AbortController();
@@ -464,6 +493,37 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
   const clipPath = `inset(0 round ${windowRadius})`;
   return (
     <>
+    {/* Global Update Notification Banner overlay */}
+    <AnimatePresence>
+      {updateReady && (
+        <motion.div 
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className="absolute top-4 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg rounded-xl border border-primary/50 bg-black/80 backdrop-blur-xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--primary)/0.2)]"
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/20">
+              <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold tracking-wide text-white">
+                Update v{updateVersion} Ready
+              </h3>
+              <p className="text-xs font-mono text-white/50 mt-1">
+                Background payload downloaded.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => ipcRenderer?.invoke("app:quit-and-install")}
+            className="shrink-0 flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-primary-foreground hover:brightness-125 transition-all shadow-[0_0_15px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.5)]"
+          >
+            Install
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
     <style suppressHydrationWarning>{`
       .theme-professional {
         --primary: ${primaryHsl};

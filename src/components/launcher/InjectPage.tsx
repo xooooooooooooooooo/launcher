@@ -45,35 +45,9 @@ const InjectPage = ({
   const [typedLogs, setTypedLogs] = React.useState<string[]>([]);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  // Auto Updater State
-  const [updateReady, setUpdateReady] = React.useState(false);
-  const [updateVersion, setUpdateVersion] = React.useState<string | null>(null);
-
+  // Empty string initialization for log container
   React.useEffect(() => {
-    if (!ipcRenderer) return;
-
-    // As soon as this page renders, we actively demand the background to poll 
-    // GitHub instead of hoping an event fires while we are mounted!
-    ipcRenderer.invoke("app:check-updates");
-
-    const onAvailable = (_: any, info: any) => {
-      setUpdateVersion(info.version);
-      
-      // Start the download manually so we get the accurate progress stream!
-      ipcRenderer.invoke("app:download-update");
-    };
-    
-    const onDownloaded = () => {
-      setUpdateReady(true);
-    };
-
-    ipcRenderer.on("updater:available", onAvailable);
-    ipcRenderer.on("updater:downloaded", onDownloaded);
-    
-    return () => {
-      ipcRenderer.removeListener("updater:available", onAvailable);
-      ipcRenderer.removeListener("updater:downloaded", onDownloaded);
-    };
+    // Typewriter effect controller logic...
   }, []);
 
   const handleRestartInstall = () => {
@@ -124,32 +98,6 @@ const InjectPage = ({
       transition={{ duration: 0.3 }}
       className="flex min-h-0 flex-1 flex-col overflow-hidden select-none"
     >
-      {/* Update Notification (Only shown when fully downloaded) */}
-      {updateReady && (
-        <motion.div 
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="mb-4 shrink-0 rounded border border-primary/50 bg-primary/10 p-3 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between shadow-[0_0_15px_hsl(var(--primary)/0.15)] overflow-hidden"
-        >
-          <div className="flex items-center gap-3">
-            <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
-            <div>
-              <h3 className="text-sm font-bold tracking-wide text-white">
-                Update v{updateVersion} Ready
-              </h3>
-              <p className="text-xs tracking-wide font-mono text-white/50 mt-1">
-                Background payload downloaded. Restart to install.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => ipcRenderer?.invoke("app:quit-and-install")}
-            className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold uppercase tracking-widest text-primary-foreground transition-all hover:brightness-125 focus:ring-2 focus:ring-primary focus:outline-none shadow-[0_0_10px_hsl(var(--primary)/0.3)] hover:shadow-[0_0_20px_hsl(var(--primary)/0.6)]"
-          >
-            Restart & Install
-          </button>
-        </motion.div>
-      )}
 
       {/* Hero */}
       <div className={`shrink-0 ${theme === "professional" ? "px-0 mb-6 border-b border-white/[0.05] pb-4" : "px-1 mb-5"}`}>
