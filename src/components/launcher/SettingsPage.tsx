@@ -3,7 +3,11 @@ import { Settings as SettingsIcon, Palette, Image, Sparkles, Crown, Briefcase } 
 import { useSettings } from "@/context/SettingsContext";
 import type { ShaderPresetId, SettingKey, LauncherTheme } from "@/context/SettingsContext";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 import React from "react";
+
+const isElectron = typeof window !== "undefined" && (window as any).require;
+const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
 
 const SHADER_PRESETS: { id: ShaderPresetId; label: string }[] = [
   { id: "gold-orbs", label: "Gold orbs" },
@@ -172,9 +176,24 @@ const SettingsPage = ({ backendOnline }: SettingsPageProps) => {
           ))}
         </div>
 
-        <div className="mt-10 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20 pb-10">
-          <SettingsIcon className="h-3 w-3" />
-          <span>Hades Architecture v2.0</span>
+        <div className="mt-10 flex flex-col gap-4 items-center justify-center pb-10">
+          <button
+            onClick={() => {
+              if (ipcRenderer) {
+                ipcRenderer.invoke("app:check-updates");
+                toast.success("Checking GitHub...", { description: "Polling remote repository latest.yml manifest." });
+              } else {
+                toast.error("Offline", { description: "Cannot check updates in browser." });
+              }
+            }}
+            className="px-6 py-2 rounded border border-primary/20 bg-primary/10 text-primary font-bold tracking-widest text-[10px] uppercase hover:bg-primary/20 transition-all shadow-[0_0_10px_hsl(var(--primary)/0.1)]"
+          >
+            Check For Updates
+          </button>
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/20">
+            <SettingsIcon className="h-3 w-3" />
+            <span>Hades Architecture v2.0</span>
+          </div>
         </div>
       </div>
     </motion.div>

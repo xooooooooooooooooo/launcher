@@ -53,12 +53,21 @@ const InjectPage = ({
 
   React.useEffect(() => {
     if (!ipcRenderer) return;
+
+    // As soon as this page renders, we actively demand the background to poll 
+    // GitHub instead of hoping an event fires while we are mounted!
+    ipcRenderer.invoke("app:check-updates");
+
     const onAvailable = (_: any, info: any) => {
       setUpdateVersion(info.version);
       setUpdateError(null);
       
       // Start the download manually so we get the accurate progress stream!
       ipcRenderer.invoke("app:download-update");
+    };
+    const onNotAvailable = () => {
+      setUpdateVersion(null);
+      setUpdateError("latest"); // Special state for 'already up to date'
     };
     const onProgress = (_: any, progressObj: any) => {
       setUpdateProgress(progressObj.percent);
@@ -70,11 +79,13 @@ const InjectPage = ({
       setUpdateError(errorStr);
     };
     ipcRenderer.on("updater:available", onAvailable);
+    ipcRenderer.on("updater:not-available", onNotAvailable);
     ipcRenderer.on("updater:progress", onProgress);
     ipcRenderer.on("updater:downloaded", onDownloaded);
     ipcRenderer.on("updater:error", onError);
     return () => {
       ipcRenderer.removeListener("updater:available", onAvailable);
+      ipcRenderer.removeListener("updater:not-available", onNotAvailable);
       ipcRenderer.removeListener("updater:progress", onProgress);
       ipcRenderer.removeListener("updater:downloaded", onDownloaded);
       ipcRenderer.removeListener("updater:error", onError);
@@ -129,24 +140,36 @@ const InjectPage = ({
       transition={{ duration: 0.3 }}
       className="flex min-h-0 flex-1 flex-col overflow-hidden select-none"
     >
-      {/* Update Notification */}
-      {updateVersion && (
+      {/* Update Notification / Error State */}
+      {(updateVersion || updateError) && (
         <motion.div 
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="mb-4 shrink-0 rounded border border-primary/50 bg-primary/10 p-3 flex flex-col sm:flex-row gap-3 sm:gap-0 items-start sm:items-center justify-between shadow-[0_0_15px_hsl(var(--primary)/0.15)]"
+          className={`mb-4 shrink-0 rounded border p-3 flex flex-col sm:flex-row gap-3 sm:gap-0 items-start sm:items-center justify-between ${
+            updateError === "latest" 
+              ? "border-green-500/50 bg-green-500/10 shadow-[0_0_15px_rgba(34,197,94,0.15)]" 
+              : "border-primary/50 bg-primary/10 shadow-[0_0_15px_hsl(var(--primary)/0.15)]"
+          }`}
         >
           <div className="flex items-center gap-3">
-            <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+            {updateError === "latest" ? (
+              <CheckCircle2 className="h-5 w-5 text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+            ) : (
+              <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+            )}
             <div>
-              <h3 className="text-sm font-bold text-white tracking-wide">Update v{updateVersion} Discovered</h3>
+              <h3 className={`text-sm font-bold tracking-wide ${updateError === "latest" ? "text-green-400" : updateError ? "text-red-500 font-mono drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]" : "text-white"}`}>
+                {updateError === "latest" ? "System Up To Date" : updateError ? "Update Core Error" : `Update v${updateVersion} Discovered`}
+              </h3>
               <div className="flex flex-col mt-0.5 gap-1.5">
-                <p className={`text-xs tracking-wide font-mono ${updateError ? "text-red-400" : "text-white/50"}`}>
-                  {updateError 
-                    ? `Download Error: ${updateError}`
-                    : updateReady 
-                      ? "Download complete. Ready for integration." 
-                      : `Downloading background payload... ${Math.round(updateProgress)}%`}
+                <p className={`text-xs tracking-wide font-mono ${updateError === "latest" ? "text-green-500/70" : updateError ? "text-red-400" : "text-white/50"}`}>
+                  {updateError === "latest"
+                    ? "Your local installation matches the GitHub secure release manifest."
+                    : updateError 
+                      ? `Download Error: ${updateError}`
+                      : updateReady 
+                        ? "Download complete. Ready for integration." 
+                        : `Downloading background payload... ${Math.round(updateProgress)}%`}
                 </p>
                 {!updateReady && !updateError && (
                   <div className="h-1 w-48 bg-black/50 overflow-hidden rounded-full">
