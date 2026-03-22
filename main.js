@@ -470,6 +470,9 @@ app.whenReady().then(() => {
 });
 
 // Auto-Updater handlers
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
+
 ipcMain.handle('app:check-updates', () => {
   if (app.isPackaged) autoUpdater.checkForUpdates();
 });

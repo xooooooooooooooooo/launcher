@@ -56,6 +56,9 @@ const InjectPage = ({
     const onAvailable = (_: any, info: any) => {
       setUpdateVersion(info.version);
       setUpdateError(null);
+      
+      // Start the download manually so we get the accurate progress stream!
+      ipcRenderer.invoke("app:download-update");
     };
     const onProgress = (_: any, progressObj: any) => {
       setUpdateProgress(progressObj.percent);

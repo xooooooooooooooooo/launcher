@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Cpu, Settings, Eye, LogOut, User, Minimize, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { LicenseStatus } from "@/pages/Index";
+import packageJson from "../../../package.json";
 interface HeaderProps {
   activePage: string;
   onNavigate: (page: any) => void;
@@ -73,7 +74,10 @@ export const ProfessionalHeader: React.FC<HeaderProps> = ({
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-3">
           <img src="./logo.png" alt="Hades" className="h-6 w-6 object-contain opacity-90 saturate-0 brightness-200" />
-          <span className="text-white font-bold tracking-widest text-sm uppercase">Hades</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-white font-bold tracking-widest text-sm uppercase">Hades</span>
+            <span className="text-white/30 font-mono tracking-widest text-[9px] uppercase">v{packageJson.version}</span>
+          </div>
         </div>
         
         <div className="h-4 w-px bg-white/20 mx-2" />
