@@ -81,7 +81,7 @@ const SettingsPage = ({ backendOnline }: SettingsPageProps) => {
             <p className="text-[10px] font-mono uppercase tracking-widest text-white/40">Core dashboard visualization model.</p>
           </div>
           
-          <div className="flex items-center gap-4 mt-4 bg-white/5 border border-white/[0.05] p-4 rounded-xl backdrop-blur-sm">
+          <div className="flex items-center gap-4 mt-4 theme-professional-glass p-6 rounded-2xl">
             <div 
               className="w-12 h-12 rounded-full border-2 border-white/10 shrink-0 shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-transform hover:scale-105"
               style={{ backgroundColor: settings.primaryColor, boxShadow: `0 0 20px ${settings.primaryColor}40` }}
@@ -138,7 +138,7 @@ const SettingsPage = ({ backendOnline }: SettingsPageProps) => {
                   {group.items.map((item) => {
                     const enabled = settings[item.key as keyof typeof settings] as boolean;               
                     return (
-                      <div key={item.key} className="flex flex-col gap-4 p-5 bg-black/40 border border-white/[0.05]">
+                      <div key={item.key} className="flex flex-col gap-4 p-6 theme-professional-glass rounded-2xl w-full">
                         <div className="flex items-start justify-between">
                           <div className="flex flex-col gap-1.5">
                             <p className="text-xs font-mono font-bold text-white uppercase tracking-widest">{item.label}</p>

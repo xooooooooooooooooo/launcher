@@ -235,11 +235,12 @@ ipcMain.handle('get-processes', async () => {
 });
 
 // Inject DLL (via backend)
-ipcMain.handle('inject-dll', async (event, dllPath, processName) => {
+ipcMain.handle('inject-dll', async (event, dllPath, processName, bearerToken) => {
   console.log('📥 IPC: inject-dll');
   console.log('   Backend URL:', BACKEND_URL);
   console.log('   Process:', processName);
   console.log('   DLL:', dllPath);
+  console.log(`   Token attached: ${!!bearerToken}`);
   
   try {
     // First check if backend is reachable
@@ -254,10 +255,15 @@ ipcMain.handle('inject-dll', async (event, dllPath, processName) => {
       };
     }
     
+    const headers = { 'Content-Type': 'application/json' };
+    if (bearerToken) {
+      headers['Authorization'] = `Bearer ${bearerToken}`;
+    }
+
     // Send injection request
     const response = await fetch(`${BACKEND_URL}/api/inject`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: headers,
       body: JSON.stringify({
         processName: processName,
         dllPath: dllPath

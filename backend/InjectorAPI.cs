@@ -475,7 +475,7 @@ namespace Launcher.API
                             bool injected = false;
                             try
                             {
-                                injected = Injector.InjectDLL(processId, payloadPath);
+                                injected = Injector.InjectDLL(processId, payloadPath, bearerToken);
                             }
                             catch (Exception fx) {
                                 Log($"✘ CRASH: {fx.Message}");
@@ -597,7 +597,7 @@ namespace Launcher.API
                 bool success = false;
                 try 
                 {
-                    success = Injector.InjectDLL(processId, dllPath);
+                    success = Injector.InjectDLL(processId, dllPath, bearerToken);
                 } 
                 catch (Exception injEx) 
                 {

@@ -181,7 +181,7 @@ const InjectPage = ({
             {/* Process List */}
             <div className={theme === "professional" ? "flex flex-col gap-1 w-1/2 overflow-y-auto pr-2 custom-scrollbar" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full"}>
               {!hasProcesses ? (
-                <div className={`col-span-full flex items-center gap-4 ${theme === "professional" ? "bg-white/[0.02] border border-white/[0.05] rounded-lg p-6" : "rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-6"}`}>
+                <div className={`col-span-full flex items-center gap-4 ${theme === "professional" ? "bg-white/[0.02] border border-white/[0.05] backdrop-blur-md rounded-lg p-6" : "rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-6"}`}>
                   <Loader2 className="h-6 w-6 shrink-0 animate-spin text-white/50" />
                   <span className={`text-sm ${theme === "professional" ? "font-mono text-white/40 uppercase tracking-widest" : "font-bold text-white/60 tracking-tight"}`}>
                     Scanning system...
@@ -198,8 +198,8 @@ const InjectPage = ({
                         type="button"
                         onClick={() => onSelectProcess(proc)}
                         className={`group relative flex items-center justify-between w-full px-4 py-3 text-left transition-all duration-300 ${isSelected
-                          ? "bg-black/40 text-white"
-                          : "bg-transparent hover:bg-white/[0.03] text-white/50 hover:text-white/80"
+                          ? "bg-white/[0.05] backdrop-blur-md border border-white/[0.05] shadow-[0_4px_12px_rgba(0,0,0,0.5),inset_0_0_15px_rgba(255,255,255,0.02)] text-white rounded-lg"
+                          : "bg-transparent hover:bg-white/[0.03] hover:backdrop-blur-sm text-white/50 hover:text-white/80 rounded-lg"
                           }`}
                       >
                         {/* Target Selection Brackets (Premium Aesthetic) */}
@@ -269,7 +269,10 @@ const InjectPage = ({
             {/* Selected Target HUD (Professional Only) */}
             {theme === "professional" && (
               <div className="flex flex-col flex-1 gap-6 min-h-0">
-                <div className="flex-1 border border-white/[0.05] bg-black/40 backdrop-blur-md rounded-sm p-6 flex flex-col relative overflow-hidden min-h-0">
+                <div className={theme === "professional" ? "flex flex-col w-full relative bg-white/[0.01] backdrop-blur-xl border border-white/[0.03] rounded-2xl p-6 shadow-[inset_0_0_20px_rgba(255,255,255,0.01)] overflow-hidden" : "bg-card rounded-2xl border border-border flex flex-col pt-6 pb-2"}>
+                {theme === "professional" && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+                )}
                 {/* CRT Scanline Overlay */}
                 <div 
                   className="absolute inset-0 pointer-events-none z-0 opacity-[0.03] mix-blend-overlay"

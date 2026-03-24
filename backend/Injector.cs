@@ -61,6 +61,17 @@ namespace Launcher
         private const uint THREAD_ALL_ACCESS = 0x1F03FF;
 
         [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr LoadLibraryEx(
+            string lpFileName,
+            IntPtr hReservedNull,
+            uint dwFlags);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool FreeLibrary(IntPtr hModule);
+
+        private const uint DONT_RESOLVE_DLL_REFERENCES = 0x00000001;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetProcAddress(
             IntPtr hModule,
             string procName);
@@ -185,7 +196,7 @@ namespace Launcher
         /// <param name="processId">Target process ID</param>
         /// <param name="dllPath">Full path to the DLL file</param>
         /// <returns>True if injection succeeded, false otherwise</returns>
-        public static bool InjectDLL(int processId, string dllPath)
+        public static bool InjectDLL(int processId, string dllPath, string bearerToken = "")
         {
             // Validate DLL path
             if (!File.Exists(dllPath))
@@ -221,6 +232,8 @@ namespace Launcher
                         throw new Exception("Access denied. Run the launcher (and backend) as Administrator (right-click → Run as administrator).");
                     throw new Exception($"Failed to open process. Error code: {err}");
                 }
+
+
 
                 // Get the address of LoadLibraryW (Unicode) - same as your working C++ code
                 IntPtr loadLibraryAddr = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryW");
@@ -313,6 +326,78 @@ namespace Launcher
                         "Ensure the DLL is 64-bit (x64), and that dependencies (e.g. MinHook.x64.dll) are in the same folder as the DLL. " +
                         "Path: " + dllPath);
                 }
+
+                // --- JWT PASS-THROUGH VIA EXPORT ---
+                if (!string.IsNullOrEmpty(bearerToken))
+                {
+                    // 1. Allocate second memory block containing token
+                    byte[] tokenBytes = Encoding.UTF8.GetBytes(bearerToken + "\0");
+                    IntPtr tokenMem = VirtualAllocEx(
+                        hProcess,
+                        IntPtr.Zero,
+                        (uint)tokenBytes.Length,
+                        AllocationType.Commit | AllocationType.Reserve,
+                        MemoryProtection.ReadWrite);
+
+                    if (tokenMem == IntPtr.Zero)
+                        throw new Exception($"Failed to allocate memory for token parameter. Error: {Marshal.GetLastWin32Error()}");
+                    
+                    WriteProcessMemory(hProcess, tokenMem, tokenBytes, (uint)tokenBytes.Length, out _);
+
+                    // 2. Load DLL locally to calculate RVA
+                    IntPtr localHModule = LoadLibraryEx(dllPath, IntPtr.Zero, DONT_RESOLVE_DLL_REFERENCES);
+                    if (localHModule == IntPtr.Zero)
+                        throw new Exception($"Failed to load DLL locally for RVA calculation. Error: {Marshal.GetLastWin32Error()}");
+
+                    IntPtr localExportAddr = GetProcAddress(localHModule, "StartInjectionWithToken");
+                    if (localExportAddr == IntPtr.Zero)
+                    {
+                        FreeLibrary(localHModule);
+                        throw new Exception("StartInjectionWithToken export not found in the injected DLL.");
+                    }
+
+                    long rva = localExportAddr.ToInt64() - localHModule.ToInt64();
+                    FreeLibrary(localHModule);
+
+                    IntPtr remoteHModule = (IntPtr)exitCode;
+                    IntPtr remoteFuncAddr = (IntPtr)(remoteHModule.ToInt64() + rva);
+
+                    Console.WriteLine($"[INJECT] RVA calculated: 0x{rva:X}. Remote func addr: 0x{remoteFuncAddr.ToInt64():X}");
+
+                    // 3. Spawns second thread
+                    IntPtr hThreadToken = IntPtr.Zero;
+                    int ntStatusToken = NtCreateThreadEx(
+                        out hThreadToken,
+                        THREAD_ALL_ACCESS,
+                        IntPtr.Zero,
+                        hProcess,
+                        remoteFuncAddr,
+                        tokenMem,
+                        0,
+                        UIntPtr.Zero, UIntPtr.Zero, UIntPtr.Zero,
+                        IntPtr.Zero);
+
+                    if (ntStatusToken != 0 || hThreadToken == IntPtr.Zero)
+                    {
+                        hThreadToken = CreateRemoteThread(
+                            hProcess,
+                            IntPtr.Zero,
+                            0,
+                            remoteFuncAddr,
+                            tokenMem,
+                            0,
+                            out _);
+
+                        if (hThreadToken == IntPtr.Zero)
+                            throw new Exception($"Failed to launch second remote thread. Error: {Marshal.GetLastWin32Error()}");
+                    }
+
+                    // 4. Wait & Free
+                    WaitForSingleObject(hThreadToken, 10000);
+                    VirtualFreeEx(hProcess, tokenMem, UIntPtr.Zero, MEM_RELEASE);
+                    CloseHandle(hThreadToken);
+                }
+                // -----------------------------------
 
                 return true;
             }
