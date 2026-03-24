@@ -327,6 +327,33 @@ namespace Launcher
                         "Path: " + dllPath);
                 }
 
+                // Retrieve the actual 64-bit HMODULE (BaseAddress) by enumerating target process modules
+                IntPtr remoteHModule = IntPtr.Zero;
+                string targetFileName = Path.GetFileName(dllPath);
+
+                // Wait a moment for the module list to update in the remote process
+                System.Threading.Thread.Sleep(200);
+
+                using (var tProc = Process.GetProcessById(processId))
+                {
+                    tProc.Refresh();
+                    foreach (ProcessModule mod in tProc.Modules)
+                    {
+                        if (mod.FileName != null && mod.FileName.EndsWith(targetFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            remoteHModule = mod.BaseAddress;
+                            break;
+                        }
+                    }
+                }
+
+                if (remoteHModule == IntPtr.Zero)
+                {
+                    throw new Exception($"Failed to locate the 64-bit base address of {targetFileName} in the target process.");
+                }
+
+                Console.WriteLine($"[INJECT] Remote HMODULE found natively: 0x{remoteHModule.ToInt64():X} (ExitCode truncated: 0x{exitCode:X})");
+
                 // --- JWT PASS-THROUGH VIA EXPORT ---
                 if (!string.IsNullOrEmpty(bearerToken))
                 {
@@ -359,7 +386,6 @@ namespace Launcher
                     long rva = localExportAddr.ToInt64() - localHModule.ToInt64();
                     FreeLibrary(localHModule);
 
-                    IntPtr remoteHModule = (IntPtr)exitCode;
                     IntPtr remoteFuncAddr = (IntPtr)(remoteHModule.ToInt64() + rva);
 
                     Console.WriteLine($"[INJECT] RVA calculated: 0x{rva:X}. Remote func addr: 0x{remoteFuncAddr.ToInt64():X}");
