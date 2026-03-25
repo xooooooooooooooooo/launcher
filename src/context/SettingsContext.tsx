@@ -23,6 +23,8 @@ export interface SettingsState {
     shaderPreset: ShaderPresetId;
     /** Custom hex color for the professional theme primary accent. */
     primaryColor: string;
+    /** Internal flag to handle cache migrations between versions. */
+    migratedV102?: boolean;
 }
 
 interface SettingsContextType {
@@ -55,12 +57,20 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
             const stored = localStorage.getItem("hades_settings");
             if (stored) {
                 const parsed = JSON.parse(stored) as Partial<SettingsState>;
+                let finalTheme = (parsed.launcherTheme as LauncherTheme) ?? defaultSettings.launcherTheme;
+                
+                // Overwrite legacy themes for upgrading users
+                if (!parsed.migratedV102) {
+                    finalTheme = "professional";
+                }
+
                 return {
                     ...defaultSettings,
                     ...parsed,
-                    launcherTheme: (parsed.launcherTheme as LauncherTheme) ?? defaultSettings.launcherTheme,
+                    launcherTheme: finalTheme,
                     shaderPreset: (parsed.shaderPreset as SettingsState["shaderPreset"]) ?? defaultSettings.shaderPreset,
                     primaryColor: parsed.primaryColor ?? defaultSettings.primaryColor,
+                    migratedV102: true,
                 };
             }
         } catch (e) {
