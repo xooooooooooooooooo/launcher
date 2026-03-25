@@ -147,6 +147,19 @@ app.on('activate', () => {
 // IPC HANDLERS
 // ============================================
 
+ipcMain.handle('write-debug', (event, filename, content) => {
+  try {
+    const tempPath = require('os').tmpdir();
+    const filePath = path.join(tempPath, filename);
+    fs.appendFileSync(filePath, content);
+    console.log(`✅ Dropped debug file to ${filePath}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Failed to write debug file:', error);
+    return false;
+  }
+});
+
 // Window Controls
 ipcMain.handle('minimize-window', () => {
   console.log('📥 IPC: minimize-window');
