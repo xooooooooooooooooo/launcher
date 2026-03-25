@@ -19,6 +19,7 @@ import VisualConfigPage from "@/components/launcher/VisualConfigPage";
 import { ProfessionalHeader } from "@/components/launcher/ProfessionalHeader";
 
 // ... (other imports)
+import { supabase } from "@/lib/supabaseClient";
 
 export type Page = "inject" | "config" | "visual" | "changelog" | "settings" | "profile";
 
@@ -343,10 +344,16 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
 
     try {
       feLog("Injection started");
+      
+      // Force an active token refresh immediately before injection payload starts
+      // This solves the issue of stale tokens after the launcher sits idle for an hour
+      const { data: { session: freshSession } } = await supabase.auth.getSession();
+      const activeToken = freshSession?.access_token || session?.access_token;
+      
       const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (session?.access_token) {
-        headers["Authorization"] = `Bearer ${session.access_token}`;
-        feLog(`Auth token attached (${session.access_token.length} chars)`);
+      if (activeToken) {
+        headers["Authorization"] = `Bearer ${activeToken}`;
+        feLog(`Auth token attached (${activeToken.length} chars)`);
       } else {
         feLog("No auth token — proceeding without authentication");
       }
