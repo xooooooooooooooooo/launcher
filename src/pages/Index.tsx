@@ -347,7 +347,8 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       
       // Force an active token refresh immediately before injection payload starts
       // This solves the issue of stale tokens after the launcher sits idle for an hour
-      const { data: { session: freshSession } } = await supabase.auth.getSession();
+      const { data: { session: freshSession }, error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) feLog(`Session refresh failed: ${refreshError.message}. Using cached session.`);
       const activeToken = freshSession?.access_token || session?.access_token;
       
       const headers: Record<string, string> = { "Content-Type": "application/json" };
@@ -358,12 +359,81 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
         feLog("No auth token — proceeding without authentication");
       }
       
+      let isBetaOrAdmin = false;
+      try {
+        const userId = freshSession?.user?.id || session?.user?.id;
+        if (userId) {
+          const { data: userRoles } = await supabase
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", userId);
+          if (userRoles) {
+            const roles = userRoles.map((r: any) => r.role || "");
+            if (roles.includes("beta") || roles.includes("Beta") || roles.includes("admin")) {
+              isBetaOrAdmin = true;
+              feLog("Verified Beta/Admin role. Bypassing cloud subscription check.");
+            }
+          }
+        }
+      } catch (e) {
+        feLog("Roles check failed. Proceeding with default subscription settings.");
+      }
+
+      const effectiveRequireSub = isBetaOrAdmin ? false : settings.requireSubscription;
+
       let base64Dll = "";
       let payloadName = selectedDll || "hades.dll";
 
-      if (dllPayload && !settings.useLocalFallback) {
-        feLog(`Encoding cloud DLL to Base64: ${dllPayload.name} (${(dllPayload.buffer.byteLength / 1024).toFixed(0)} KB)`);
-        const blob = new Blob([dllPayload.buffer]);
+      if (!settings.useLocalFallback) {
+        feLog("Requesting signed download URL from Cloud Edge...");
+        
+        const dlResponse = await fetch(`https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/launcher-download`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify({ requireSubscription: effectiveRequireSub })
+        });
+        
+        if (!dlResponse.ok) {
+           let errMsg = `HTTP ${dlResponse.status}`;
+           try { const j = await dlResponse.json(); errMsg = j.error || j.message || errMsg; } catch {}
+           
+           try {
+               const { data: rolesData } = await supabase.from("user_roles").select("role").eq("user_id", freshSession?.user?.id || session?.user?.id);
+               const rolesStr = (rolesData || []).map((r: any) => r.role).join(", ") || "No Roles Found";
+               throw new Error(`Cloud Access Denied: "${errMsg}" | Database returned: [${rolesStr}]`);
+           } catch {
+               throw new Error(`Cloud Access Denied: ${errMsg}`);
+           }
+        }
+        
+        const dlData = await dlResponse.json();
+        if (!dlData.url) throw new Error("Cloud Error: Edge Function did not return a valid download URL.");
+        
+        feLog("Downloading payload bytes into memory...");
+        const payloadResponse = await fetch(dlData.url);
+        if (!payloadResponse.ok) throw new Error("Network Error: Failed to download the payload bytes.");
+        
+        let bytes = await payloadResponse.arrayBuffer();
+        
+        // JSON pointer check
+        try {
+            const possibleJsonString = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+            if (possibleJsonString.trim().startsWith("{")) {
+                const parsed = JSON.parse(possibleJsonString);
+                const innerUrl = parsed.url || parsed.link || parsed.download;
+                if (innerUrl) {
+                    feLog("Detected nested JSON pointer. Re-routing payload download...");
+                    const r = await fetch(innerUrl);
+                    if (!r.ok) throw new Error("Network Error: Failed to fetch the nested DLL.");
+                    bytes = await r.arrayBuffer();
+                }
+            }
+        } catch {}
+
+        if (bytes.byteLength === 0) throw new Error("DLL sync failed: empty response.");
+        
+        feLog(`Encoding cloud payload to Base64 (${(bytes.byteLength / 1024).toFixed(0)} KB)...`);
+        const blob = new Blob([bytes]);
         base64Dll = await new Promise<string>((resolve) => {
           const reader = new FileReader();
           reader.onload = () => {
@@ -372,12 +442,9 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
           };
           reader.readAsDataURL(blob);
         });
-        payloadName = dllPayload.name;
         feLog(`Base64 encoded: ${(base64Dll.length / 1024).toFixed(0)} KB`);
-      } else if (dllPayload && settings.useLocalFallback) {
-        feLog("Cloud DLL available but useLocalFallback is ON — using local DLL");
       } else {
-        feLog("No cloud DLL in memory — backend will use local fallback");
+        feLog("useLocalFallback is ON — skipping cloud sync and enforcing local backend lookup.");
       }
 
       feLog(`Sending POST to ${API_URL}/inject`);
@@ -391,7 +458,7 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
           dllName: payloadName,
           dllBytesBase64: base64Dll,
           ephemeral: !!base64Dll,
-          requireSubscription: settings.requireSubscription
+          requireSubscription: effectiveRequireSub
         }),
       });
       feLog(`Backend responded: HTTP ${response.status}`);

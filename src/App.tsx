@@ -7,7 +7,6 @@ import { SettingsProvider, useSettings } from "@/context/SettingsContext";
 import Launcher from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Login from "./components/Login";
-import DllSync from "./components/launcher/DllSync";
 import { useEffect, useState } from "react";
 import { supabase } from "./lib/supabaseClient";
 
@@ -57,7 +56,6 @@ function AuthView({ session, profile }: { session: any; profile: any }) {
           transition={pageTransition.transition}
           className="h-full w-full min-h-0 min-w-0"
         >
-          {settings.useCloudSync && <DllSync onDllFetched={(name, buffer) => setDllPayload({ name, buffer })} />}
           <Launcher profile={profile} user={session.user} session={session} dllPayload={dllPayload} />
         </motion.div>
       )}

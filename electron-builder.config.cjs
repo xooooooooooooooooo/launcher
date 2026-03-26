@@ -21,9 +21,7 @@ module.exports = {
   extraResources: [
     ...(hasPreview ? [{ from: 'resources/preview.exe', to: 'preview.exe' }] : []),
     ...(hasPreviewJar ? [{ from: 'assets/preview-sdk.jar', to: 'assets/preview-sdk.jar' }] : []),
-    { from: 'dist-backend/backend.exe', to: 'backend/backend.exe' },
-    { from: 'backend/dll/client.dll', to: 'backend/dll/client.dll' },
-    { from: 'backend/dll/MinHook.x64.dll', to: 'backend/dll/MinHook.x64.dll' }
+    { from: 'dist-backend/backend.exe', to: 'backend/backend.exe' }
   ],
   win: {
     target: 'nsis',

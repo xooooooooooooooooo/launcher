@@ -370,35 +370,6 @@ namespace Launcher.API
                             Log($"⚠ Edge function returned {verifyResponse.StatusCode}");
                         }
                         
-                        // FALLBACK FOR BETA USERS: If Edge Function returns false (or error), check user_roles natively
-                        if (!isSubscriptionActive)
-                        {
-                            Log("Subscription flag is false. Verifying beta role via REST API...");
-                            try
-                            {
-                                using var roleReq = new HttpRequestMessage(HttpMethod.Get, "https://szxxwxwityixqzzmarlq.supabase.co/rest/v1/user_roles?select=role&role=eq.beta");
-                                roleReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-                                roleReq.Headers.Add("apikey", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6eHh3eHdpdHlpeHF6em1hcmxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTkyNDQsImV4cCI6MjA4NjQzNTI0NH0.5XSYOM1VZrKOeQJSErdI-J2PcvWNo2YLHrCfQ5MNxRs");
-
-                                var roleResp = await Http.SendAsync(roleReq);
-                                if (roleResp.IsSuccessStatusCode)
-                                {
-                                    string roleJson = await roleResp.Content.ReadAsStringAsync();
-                                    using var roleDoc = JsonDocument.Parse(roleJson);
-                                    if (roleDoc.RootElement.ValueKind == JsonValueKind.Array && roleDoc.RootElement.GetArrayLength() > 0)
-                                    {
-                                        isSubscriptionActive = true;
-                                        Log("✔ Beta Role verified natively via REST API (Edge Function bypass)");
-                                        try { File.AppendAllText(Path.Combine(Path.GetTempPath(), "hades_debug.txt"), $"[{DateTime.Now}] Beta Role successfully bypassed via native C# REST API! Injection auth active.\n"); } catch { }
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Log($"⚠ Beta role check network error: {ex.Message}");
-                            }
-                        }
-
                         if (!isSubscriptionActive)
                         {
                             Log("✘ Subscription is NOT active — blocking injection");
@@ -573,33 +544,10 @@ namespace Launcher.API
                 }
 
                 // If no bytes were sent from the cloud, the dllPath might not exist on disk.
-                // Automatically fall back to the local ClientTest.dll bundled with the backend.
                 if (!File.Exists(dllPath))
                 {
-                    Log($"DLL not found at: {dllPath}");
-                    Log("Searching for local fallback DLL...");
-                    var searchPaths = new[] {
-                        Path.Combine(AppContext.BaseDirectory, "dll", "ClientTest.dll"),
-                        Path.Combine(Directory.GetCurrentDirectory(), "dll", "ClientTest.dll"),
-                        Path.Combine(Directory.GetCurrentDirectory(), "..", "dll", "ClientTest.dll"),
-                        Path.Combine(Directory.GetCurrentDirectory(), "..", "backend", "dll", "ClientTest.dll"),
-                        Path.Combine(GetDllFolderPath(), "ClientTest.dll"),
-                        Path.Combine(GetDllFolderPath(), "hades.dll")
-                    };
-                    
-                    string? found = null;
-                    foreach (var p in searchPaths) {
-                        if (File.Exists(p)) { found = Path.GetFullPath(p); break; }
-                    }
-                    
-                    if (found != null) {
-                        Log($"Mode: LOCAL FALLBACK");
-                        Log($"Found: {found}");
-                        dllPath = found;
-                    } else {
-                        Log("✘ No DLL found anywhere — cannot inject");
-                        return JsonSerializer.Serialize(new ApiResponse { success = false, message = "No DLL found! Place ClientTest.dll or hades.dll in the backend/dll/ folder or enable Cloud Sync.", steps = steps }, AppJsonContext.Default.ApiResponse);
-                    }
+                    Log($"✘ Cloud Payload Missing. DLL not found at: {dllPath}");
+                    return JsonSerializer.Serialize(new ApiResponse { success = false, message = "Critical Error: Secure payload block missing. The Cloud Edge Function failed to authorize the injection or sync the bytes.", steps = steps }, AppJsonContext.Default.ApiResponse);
                 }
 
                 // Perform deep PE validation and logging

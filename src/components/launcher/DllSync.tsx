@@ -32,8 +32,9 @@ export default function DllSync({ onDllFetched }: DllSyncProps) {
                     return;
                 }
 
-                // Get the current session JWT
-                const { data: { session } } = await supabase.auth.getSession();
+                // Get the current session JWT (force refresh to ensure it's not stale)
+                const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
+                if (refreshError) console.warn(`[DllSync] Session refresh failed: ${refreshError.message}. Using cached session.`);
                 if (!session?.access_token) return;
 
                 toast.loading("Syncing client files...", { id: "dll-sync" });
@@ -46,7 +47,6 @@ export default function DllSync({ onDllFetched }: DllSyncProps) {
                 // 2. DOWNLOAD VIA SIGNED URL FROM EDGE FUNCTION
                 toast.loading("Requesting signed download URL...", { id: "dll-sync" });
 
-                let dlData: any = null;
                 const endpointName = "launcher-download";
                 const dlResponse = await fetch(`https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/${endpointName}`, {
                     method: "POST",
@@ -65,44 +65,19 @@ export default function DllSync({ onDllFetched }: DllSyncProps) {
                     } catch {
                         errMsg = dlResponse.statusText;
                     }
-                    
-                    // NATIVE FALLBACK FOR BETA USERS:
-                    // If the cloud Edge Function rejects them (because it's outdated and rejects Beta licenses),
-                    // we dynamically intercept the 403 Forbidden and manually check their user_roles via the backend DB.
-                    console.warn(`Edge Function Rejected Download: ${errMsg}. Attempting Beta fallback natively...`);
-                    
-                    const { data: rolesData } = await supabase
-                        .from("user_roles")
-                        .select("role")
-                        .eq("user_id", session.user.id);
-                        
-                    const roles = (rolesData || []).map((r: any) => r.role);
-                    
-                    if (roles.includes("beta") || roles.includes("admin") || roles.includes("owner")) {
-                        console.log("✔ Beta Role Verified Natively! Bypassing Edge Function and pulling payload directly from Supabase Storage...");
-                        
-                        if (ipcRenderer) {
-                            ipcRenderer.invoke("write-debug", "hades_debug.txt", `[${new Date().toLocaleString()}] Beta Role successfully bypassed via native React Storage DB query! Cloud Access Denied intercepted on launcher startup.\n`);
-                        }
 
-                        const { data: signedData, error: signedError } = await supabase.storage
-                            .from("configs")
-                            .createSignedUrl("client/hades.dll", 60);
-                            
-                        if (signedError || !signedData?.signedUrl) {
-                            toast.error(`Beta Bypass Failed: Could not generate native storage URL. ${signedError?.message}`, { id: "dll-sync" });
-                            return;
-                        }
-                        
-                        dlData = { url: signedData.signedUrl };
-                    } else {
-                        console.warn(`Cloud Access Denied: ${errMsg}`);
+                    try {
+                        const { data: rolesData } = await supabase.from("user_roles").select("role").eq("user_id", session.user.id);
+                        const rolesStr = (rolesData || []).map((r: any) => r.role).join(", ") || "No Roles Found";
+                        console.warn(`Cloud Access Denied: ${errMsg}. DB says your roles are: [${rolesStr}]`);
+                        toast.error(`Cloud Access Denied: "${errMsg}" | Database returned: [${rolesStr}]`, { id: "dll-sync", duration: 30000 });
+                    } catch {
                         toast.error(`Cloud Access Denied: ${errMsg}`, { id: "dll-sync", duration: 10000 });
-                        return;
                     }
-                } else {
-                    dlData = await dlResponse.json();
+                    return;
                 }
+
+                const dlData = await dlResponse.json();
                 if (!dlData.url) {
                     console.warn("Cloud Error: The Edge Function did not return a valid download URL.");
                     toast.error("Cloud Error: The Edge Function did not return a valid download URL.", { id: "dll-sync" });
