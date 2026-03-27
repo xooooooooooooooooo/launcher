@@ -30,7 +30,7 @@ module.exports = {
   },
   nsis: {
     oneClick: true,
-    perMachine: false,
+    perMachine: true,
     allowToChangeInstallationDirectory: false,
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
