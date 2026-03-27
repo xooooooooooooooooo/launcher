@@ -6,6 +6,14 @@ const fs = require('fs');
 const readline = require('readline');
 const { autoUpdater } = require('electron-updater');
 
+// Native crash reporting for debugging invisible external machine crashes
+process.on('uncaughtException', (error) => {
+  dialog.showErrorBox('Hades Critical Crash', `An unexpected error occurred in the core process:\n\n${error.stack || error.message}`);
+});
+process.on('unhandledRejection', (reason) => {
+  dialog.showErrorBox('Hades Unhandled Rejection', `A background task failed critically:\n\n${reason instanceof Error ? reason.stack : String(reason)}`);
+});
+
 autoUpdater.autoDownload = false;
 
 // Preview SDK JAR path (Visual Configurator ESP overlay)
