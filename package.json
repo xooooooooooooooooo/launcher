@@ -1,6 +1,6 @@
 {
   "name": "hades-injector",
-  "version": "1.14.6",
+  "version": "1.14.7",
   "description": "Hades Client Launcher - Desktop App",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
     "build:backend": "cd backend && dotnet publish -c Release -r win-x64 --self-contained true -p:PublishAot=true -p:AssemblyName=backend -o ../dist-backend",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
-    "package": "npm run type-check && npm run build && npm run build:backend && node -e \"require('fs').mkdirSync('build-temp', {recursive: true}); require('fs').copyFileSync('preload.js', 'build-temp/preload.js')\" && javascript-obfuscator main.js --output build-temp/main.js --compact true --control-flow-flattening true --string-array true --string-array-encoding base64 && electron-builder --config electron-builder.config.cjs"
+    "package": "npm run type-check && npm run build && npm run build:backend && node -e \"require('fs').mkdirSync('build-temp', {recursive: true}); require('fs').copyFileSync('preload.js', 'build-temp/preload.js'); require('fs').copyFileSync('main.js', 'build-temp/main.js')\" && electron-builder --config electron-builder.config.cjs"
   },
   "keywords": [
     "electron",

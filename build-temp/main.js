@@ -1,1 +1,551 @@
-const a0_0x2603b2=a0_0x3990;(function(_0x59d00c,_0x13bfd5){const _0x3fc285=a0_0x3990,_0x2e4208=_0x59d00c();while(!![]){try{const _0x209728=-parseInt(_0x3fc285(0x18f))/0x1*(-parseInt(_0x3fc285(0x181))/0x2)+parseInt(_0x3fc285(0x1be))/0x3+-parseInt(_0x3fc285(0x1b6))/0x4+-parseInt(_0x3fc285(0x23d))/0x5+-parseInt(_0x3fc285(0x250))/0x6*(parseInt(_0x3fc285(0x23c))/0x7)+-parseInt(_0x3fc285(0x168))/0x8*(parseInt(_0x3fc285(0x1cd))/0x9)+-parseInt(_0x3fc285(0x1f0))/0xa*(-parseInt(_0x3fc285(0x279))/0xb);if(_0x209728===_0x13bfd5)break;else _0x2e4208['push'](_0x2e4208['shift']());}catch(_0x840ec2){_0x2e4208['push'](_0x2e4208['shift']());}}}(a0_0x5543,0x52446));function a0_0x5543(){const _0x5d48f2=['Aw1Hz2u','mJeWnerpEvPRyq','C2nOzw1H','C2XPzgvY','BMHtAKC','yMLU','ChjLDMLLDZPSB2fKlxnJzw5L','zxLbDK8','ChjLDMLLDZPZy2HLBwe','qZPCuhjVz3jHBsbgAwXLCW','Ahr0Chm6lY9ZENH4D3H3Axr5AxHXENPTyxjSCs5ZDxbHyMfZzs5JBW','Bg9Hzfvsta','ywXSB2m','rgvIDwC','uuzuCwC','tM9Ozeq','zxjYB3i','sfPJwKy','y3HYBMi','quTkCee','r0fruKi','y29TBwfUzeXPBMu','sMf2yq','zhHiwu4','yMvMB3jLlwLUChv0lwv2zw50','whf2qvK','mK9rCKXlDG','q05itKG','yxbWoMrVD25SB2fKlxvWzgf0zq','yMfJA2vUzc5LEgu','z2v0','y2HHBMDLBg9N','Cg9W','DxbKyxrLCJPUB3qTyxzHAwXHyMXL','D1zLrLC','qZPCuhjVz3jHBsbgAwXLC1XkyxzHxgPKAY0YmvXIAw5CAMf2ys5LEgu','vhPVtuC','CMvXDwvZDeLK','D2DqsNa','CMvZB2X2zq','mtK4mtjRzfHeAwC','ANnVBG','y3vIzw1HCf8','zgvSzxrL','Egvsvxe','w1bYzxzPzxDcCMLKz2vDihbYzxzPzxCTC2rRlMPHCIbYzxf1AxjLCYbkyxzHide3kY4Gsw5ZDgfSBcbkreSGmtCGyw5KihnLDcbkqvzbx0HptuuGB3iGywrKigL0ihrVifbbveGU','qsbIywnRz3jVDw5KihrHC2SGzMfPBgvKignYAxrPy2fSBhK6cGO','AgvPz2H0','ChjLDMLLDY1ZzgSUAMfY','uwH3vwC','y29UDhjVBa','yxjYyxLcDwzMzxi','CMvHzgXPBMu','CNHAsue','BLL0Bwe','q2HLC3rfu1a','AgHkCvi','AgfUzgXL','rMfPBgvKihrVihn0yxj0igjHy2TLBMq6','zw5HyMXLza','r01orwW','v0PwC0u','zMv0y2GTC2TPBG','uvPvzKW','DhjPBq','yxnZzxrZ','CMfUzg9Tvvvjra','DxbKyxrLCJPLCNjVCG','AM9PBG','sKLdCge','sxrLBuvtua','Ahr0CdOVl2XVy2fSAg9ZDdO1mtCZ','y2HHBMDLBg9NlxvWzgf0zwq','z1fJEeK','sxrLBsbfu1a','BvnIv1K','ChjLDMLLDZPSAxn0lw1VzhvSzxm','ywn0AxzHDgu','Cgf0Aa','mJi4nJmWoe5Ky0HKAa','zNjVBq','uNbPDLi','Ag5OuKy','tw9NtKG','r29gwfa','D1PQz3O','uMvUzgvYihrPBwvVDxq','mtuZotC5nvz0reDytq','C2v0','y2r6CMy','iZu1zMy1nq','zMLSDgvY','uxz0zuS','DMvYC2LVBG','DxbKyxrLCJPHDMfPBgfIBgu','BMv0oc4W','D2nJsgC','DxbKyxrLlwrVD25SB2fKzwq','yxbWoNf1AxqTyw5KlwLUC3rHBgW','y2XVC2vK','AMrRlq','ChjLBg9Hzc5QCW','mZiZmwrKCKDfCW','BwLUAw1PEMuTD2LUzg93','Dw5Oyw5KBgvKuMvQzwn0Aw9U','z0r0Eem','C2vW','yNLQA3O','yvbYsLu','AwDUB3jL','ChvIBgLJ','DhLWzq','AxnqywnRywDLza','CMvWBgfJzq','v3bQA1O','y3jLyxrLsw50zxjMywnL','wLbIsxO','y2f0y2G','twLsyvG','q2HLC3qGrvnq','u3rHCNrPBMCGyMfJA2vUzcbMCM9ToG','D3jPDgu','s0HotM4','zxLkAgjhy2LpAuPjvxPjmu5PsxnjBLi1y0njnKLRCfHwq0O5lMv5sNbJm01Pt2LkEMryqMHzBuz6wLnjC0LUsMXAAuK2sw5onMviAdnLsgrWzeHSCgvirJzLBtfOy214EeLPD2LJBtLZwLnjnKLTrNvImJrPtenkCfLyuwLpAKuZtNPbne5uA3LorffZsw1wngndstznAKe0tMPrEK5ustbosdaUnvHtwu9nmvzACKTpzvfku0vYzeKTsJjqy3zxtM8YwuXiCKnMutvntNHsCW','C3rYAw5NAwz5','sLznigv4AxrLza','q01zug4','y2XPzw50lq','qw4GDw5LEhbLy3rLzcbLCNjVCIbVy2n1CNjLzcbPBIb0AguGy29YzsbWCM9JzxnZoGOk','zgf0yq','Bg9N','CgfYC2u','u2nOzw1HihrPBwvVDxq','DNHeque','t2jpCM0','zgLZDc1IywnRzw5K','u2z1uvG','mJGWr2jpzwDL','CxvPDa','BNvTyMvY','q09OtLe','B3bLBKzPBgu','rw1WD04','z2XbChC','ChjLDMvUDerLzMf1Bhq','y2XLyxi','CgLWzq','reXmiezPBgvZ','Aen1BeO','Bxbkq3K','B3bLBI1MAwXLlwrPywXVzW','w1bYzxzPzxDcCMLKz2vDiezHAwXLzcb0BYbZDgfYDcbkyxzHihbYB2nLC3m6','Aw5KzxGUAhrTBa','C3rHy2S','AgfZ','tMj0uMC','zxHPC3rZu3LUyW','lMrSBa','vuTPvgm','lNbUzW','swTLCKe','yMfJA2vUza','DujcBLu','zNjHBwu','C3rKAw4','DgHPy2TUzxnZ','thDwquu','qMfJA2vUzcbLEgvJDxrHyMXLig5VDcbMB3vUzc4Gu2TPChbPBMCGyxv0BY1ZDgfYDc4','CunyCeC','tLnpB2W','lwPHCG','C3rHCNrZv2L0Aa','DMLLyxe','DKrHsfK','rw5HyMXLza','ChjLDMLLDZPYzw5Kzxi','C2nLBMuUANnVBG','sLznigzHAwXLzcb0BYbZDgfYDa','uMnZwMK','vM5dwMe','Auz3u3m','seLzBMq','D0zTtNK','zMLUza','zM9YrwfJAa','yxv0B0LUC3rHBgXpBKfWCff1Axq','w0n1yMvTyxbDihnJzw5LoI8VigzPBguGBM90igzVDw5KoG','DxbKyxrLCJPKB3DUBg9HzgvK','Dg9tDhjPBMC','y2HPBgrFChjVy2vZCW','rermDNK','uKf6Bxu','AwDUB3jLlwDWDs1IBg9JA2XPC3q','rMfPBgvKihrVigzLDgnOihvWzgf0zxm','C2DguKS','C2HVD09Wzw5eAwfSB2C','qMfJA2vUzcbLEgL0zwqGD2L0AcbJB2rLia','D2LKDgG','zg93BMXVywrFDxjS','zwXLy3rYB24','C094B24','BwvZC2fNzq','tgDiz3y','zLbfDwq','C2vUza','wurIu2q','zg93BMXVywrvCgrHDgu','s3H4AwK','uMDNwK8','y2HLy2TgB3jvCgrHDgvZ','rK1OCuO','BMziq0i','venwD1G','mtC0m1jvvhrvCa','mti2mZm2mg5LyMLqDW','AwnVBI5WBMC','tvfnwvG','CgL4zwXZ','yxbWzw5Ku3DPDgnO','Bg9HzezPBgu','u0jPzMm','C3rKB3v0','txP2svq','C3bHD25HCMDZ','D2LUzg93lwfSBc1JBg9Zzwq','AMf2yq','D2fYBG','tgLUzsbuAgLJA25LC3m','yMfZzty0','EeXUDeS','C3rKzxjY','CMvNAxn0zxjty2HLBwvZqxnqCML2AwXLz2vK','u255yva','mtu0mKPbAuryuW','z2v0lwnOyw5NzwXVzW','DxL2C3u','C2HVD0vYCM9YqM94','zg93BMXVywqTChjVz3jLC3m','ChvZAa','CMvQzwn0','surstgy','C2nLBMvZ','wvPkwuW','ugXHEwvYrvnq','qK5zu1q','l3jLC3qVDJeVBgf1BMnOzxjFDMvYC2LVBNm/C2vSzwn0psOMB3jKzxi9y3jLyxrLzf9HDc5KzxnJjMXPBwL0pte','sgfKzxnmyxvUy2HLCI8XlJa','Dg9Nz2XL','Dw5JyxvNAhrfEgnLChrPB24','zwXLy3rYB24TDxbKyxrLCG','yxv0B0rVD25SB2fK','u1DtCeW','weTRAe4','zgLZDa','zMLSzvbHDgHZ','w1bYzxzPzxDcCMLKz2vDifvZAw5NiePHDMe6','A2v5','BgvUz3rO','rvzNs1m','CMvUzgvY','sgfKzxmGvw5Oyw5KBgvKifjLAMvJDgLVBG','rJeY','sgfKzxmGq3jPDgLJywWGq3jHC2G','C2nLBMu','swnoqKi','D2LUmZi','C2HPzNq','CMvZB3vYy2vZugf0Aa','rvnqienVBg9Y','z2v0qwXSv2LUzg93CW','ugXHEwvYrvnql3nJzw5LxZiWmJyWmZeXxZaWmZuWnW','zxHPDa','CgXHDgzVCM0','vxbKyxrLignOzwnRigzHAwXLzdO','mZa5mdaXA0fMwwPp','CLnKz3C','CMvMCMvZAc1JAgfUz2vSB2C','DfvIsw8','vvv4Cxa','ywTODe0','DxfXs2u','q2HLy2TPBMCGzM9YihvWzgf0zxmUlI4','zgXS','zgfYD2LU','BwPbAhK','D2vIq29UDgvUDhm','yxbWoMnOzwnRlxvWzgf0zxm','y3j5ChrV','zgLYBMfTzq','CKTuvxe','DgHLBG'];a0_0x5543=function(){return _0x5d48f2;};return a0_0x5543();}const {app,BrowserWindow,ipcMain,dialog,protocol}=require(a0_0x2603b2(0x22e)),path=require(a0_0x2603b2(0x1b5)),os=require('os'),{spawn}=require(a0_0x2603b2(0x224)),fs=require('fs'),readline=require(a0_0x2603b2(0x19b)),{autoUpdater}=require(a0_0x2603b2(0x260));process['on'](a0_0x2603b2(0x25f),_0x389926=>{const _0x33f07a=a0_0x2603b2,_0x39183f={'sOxon':_0x33f07a(0x26d)};dialog[_0x33f07a(0x253)](_0x39183f[_0x33f07a(0x22f)],_0x33f07a(0x1e7)+(_0x389926[_0x33f07a(0x200)]||_0x389926[_0x33f07a(0x230)]));}),process['on'](a0_0x2603b2(0x1cf),_0x50367f=>{const _0x15e4d6=a0_0x2603b2,_0x870a49={'esodH':function(_0x5bf4d4,_0x1fa39c){return _0x5bf4d4 instanceof _0x1fa39c;}};dialog[_0x15e4d6(0x253)](_0x15e4d6(0x26b),_0x15e4d6(0x195)+(_0x870a49['esodH'](_0x50367f,Error)?_0x50367f[_0x15e4d6(0x200)]:String(_0x50367f)));}),autoUpdater[a0_0x2603b2(0x261)]=![];function getPreviewSdkJarPath(){const _0x5370e1=a0_0x2603b2,_0x1c066c={'NohdD':_0x5370e1(0x1a8),'RcsZi':_0x5370e1(0x197)},_0x30e74d=app[_0x5370e1(0x1d7)]?process[_0x5370e1(0x272)]:__dirname;return path['join'](_0x30e74d,_0x1c066c[_0x5370e1(0x176)],_0x1c066c[_0x5370e1(0x219)]);}function getCubemapDir(_0x4b9b2e){const _0x3f4927=a0_0x2603b2,_0x5ced8d={'cxrnb':function(_0x43bba3,_0x1a6c1e){return _0x43bba3||_0x1a6c1e;},'kqMkp':_0x3f4927(0x264),'akhtM':'assets','kkhBW':_0x3f4927(0x258)},_0x17bc3c=_0x5ced8d[_0x3f4927(0x179)](_0x4b9b2e,_0x3f4927(0x275))['replace'](/\\/g,path[_0x3f4927(0x1d1)]);return app[_0x3f4927(0x1d7)]?path[_0x3f4927(0x1ab)](__dirname,_0x5ced8d['kqMkp'],_0x3f4927(0x1a8),_0x3f4927(0x258),_0x17bc3c):path[_0x3f4927(0x1ab)](__dirname,'public',_0x5ced8d[_0x3f4927(0x15b)],_0x5ced8d['kkhBW'],_0x17bc3c);}function registerSceneProtocol(){const _0x539058=a0_0x2603b2,_0x569307={'IcNBB':function(_0x40cb76,_0x22e320){return _0x40cb76(_0x22e320);},'keIyr':'[Cubemap]\x20scene://\x20protocol\x20error','NbtRg':function(_0x62cfd1,_0x58f174){return _0x62cfd1(_0x58f174);},'MzvIT':_0x539058(0x26e)};protocol['registerFileProtocol'](_0x569307[_0x539058(0x245)],(_0x531b91,_0x53dc55)=>{const _0xc0196c=_0x539058;try{const _0x2f4414=_0x531b91['url'][_0xc0196c(0x1d8)](/^scene:\/\/[^/]+\//,'')[_0xc0196c(0x1d8)](/%20/g,'\x20'),_0x2dd6cd=_0x2f4414['split'](/\/|\\/)[_0xc0196c(0x1c2)](Boolean);if(_0x2dd6cd[_0xc0196c(0x268)]<0x2)return _0x569307['IcNBB'](_0x53dc55,{'error':-0x2});const _0x2cd5b7=_0x2dd6cd[_0xc0196c(0x187)](),_0x405096=_0x2dd6cd['join']('/'),_0x11cce4=getCubemapDir(_0x405096),_0x467a53=path[_0xc0196c(0x1ab)](_0x11cce4,_0x2cd5b7),_0x19d25d=fs['existsSync'](_0x467a53);_0x19d25d?_0x53dc55({'path':_0x467a53}):(console['warn'](_0xc0196c(0x221),_0x467a53),_0x569307[_0xc0196c(0x26f)](_0x53dc55,{'error':-0x2}));}catch(_0x5770d7){console[_0xc0196c(0x249)](_0x569307['keIyr'],_0x5770d7[_0xc0196c(0x230)]),_0x569307[_0xc0196c(0x202)](_0x53dc55,{'error':-0x2});}});}let previewJvmProcess=null;const previewPending=new Map();function startPreviewBridge(){const _0x5210ff=a0_0x2603b2,_0x5036e4={'aPrJU':_0x5210ff(0x218),'Kxxii':'UnsupportedClassVersionError','AKJpA':_0x5210ff(0x1e4),'QFTqg':function(_0x30fbd1){return _0x30fbd1();},'RggZO':function(_0xb80401,_0x206e57){return _0xb80401===_0x206e57;},'tUbIo':_0x5210ff(0x270),'EsjkT':'.exe','HIYnd':_0x5210ff(0x16c),'glApw':function(_0x2b9e63,_0x58c4da){return _0x2b9e63+_0x58c4da;},'uqqKe':function(_0x19bd02,_0x5a0523){return _0x19bd02===_0x5a0523;},'COhNQ':_0x5210ff(0x170),'GoFXP':_0x5210ff(0x17d),'sgFRK':'C:\x5cProgram\x20Files\x5cJava\x5cjdk-17\x5cbin\x5cjava.exe','HwWii':_0x5210ff(0x266),'EVgKS':function(_0x1d4cdc,_0x1d52df,_0x41664e,_0x362ba7){return _0x1d4cdc(_0x1d52df,_0x41664e,_0x362ba7);},'QvteK':_0x5210ff(0x1f9),'nYtma':_0x5210ff(0x177),'FMhqJ':_0x5210ff(0x1e8),'wgPJp':'line','XNXBO':_0x5210ff(0x276)},_0x226d9f=_0x5036e4[_0x5210ff(0x175)](getPreviewSdkJarPath);if(!fs['existsSync'](_0x226d9f)){console[_0x5210ff(0x249)]('[PreviewBridge]\x20JAR\x20not\x20found:',_0x226d9f);return;}const _0x5e856e=_0x5036e4[_0x5210ff(0x237)](process[_0x5210ff(0x277)],_0x5036e4[_0x5210ff(0x27c)])?_0x5036e4['EsjkT']:'',_0x29ee33=[];process.env.JAVA_HOME&&_0x29ee33[_0x5210ff(0x255)](path['join'](process.env.JAVA_HOME,_0x5036e4[_0x5210ff(0x21c)],_0x5036e4[_0x5210ff(0x1f6)](_0x5210ff(0x248),_0x5e856e)));if(_0x5036e4[_0x5210ff(0x15c)](process[_0x5210ff(0x277)],_0x5036e4[_0x5210ff(0x27c)])){const _0x55678b=process.env['ProgramFiles']||_0x5036e4[_0x5210ff(0x1f3)];try{const _0x28ba88=path[_0x5210ff(0x1ab)](_0x55678b,_0x5036e4[_0x5210ff(0x1bb)]);if(fs[_0x5210ff(0x203)](_0x28ba88)){const _0x2facb1=fs['readdirSync'](_0x28ba88)[_0x5210ff(0x1c2)](_0x5cd444=>_0x5cd444[_0x5210ff(0x212)](_0x5210ff(0x1cb)));_0x2facb1['sort']((_0x1ba45a,_0x27f818)=>(parseInt(_0x27f818['replace'](/\D/g,''),0xa)||0x0)-(parseInt(_0x1ba45a[_0x5210ff(0x1d8)](/\D/g,''),0xa)||0x0)),_0x2facb1[_0x5210ff(0x21f)](_0x40f046=>_0x29ee33[_0x5210ff(0x255)](path['join'](_0x28ba88,_0x40f046,_0x5210ff(0x16c),'java'+_0x5e856e)));}}catch(_0x18c379){}_0x29ee33[_0x5210ff(0x255)](_0x5036e4[_0x5210ff(0x229)]),_0x29ee33[_0x5210ff(0x255)](_0x5210ff(0x18a));}_0x29ee33[_0x5210ff(0x255)]('java');const _0x1f2acd=_0x29ee33[_0x5210ff(0x21e)](_0x22262e=>{try{return fs['existsSync'](_0x22262e);}catch{return![];}})||_0x5210ff(0x248);console[_0x5210ff(0x1e9)](_0x5036e4['HwWii'],_0x1f2acd),previewJvmProcess=_0x5036e4[_0x5210ff(0x269)](spawn,_0x1f2acd,[_0x5210ff(0x211),_0x226d9f],{'stdio':[_0x5036e4[_0x5210ff(0x1c3)],'pipe',_0x5036e4[_0x5210ff(0x1c3)]],'windowsHide':!![]}),previewJvmProcess['on'](_0x5036e4[_0x5210ff(0x19d)],_0x5f3264=>{const _0x14e547=_0x5210ff;console[_0x14e547(0x249)](_0x14e547(0x1fe),_0x5f3264[_0x14e547(0x230)]),previewJvmProcess=null;for(const [,_0x1230e9]of previewPending)_0x1230e9[_0x14e547(0x256)](new Error(_0x5036e4[_0x14e547(0x1d3)]));previewPending[_0x14e547(0x1f8)]();});if(!previewJvmProcess)return;let _0x279afb='';previewJvmProcess['stderr']&&previewJvmProcess[_0x5210ff(0x24d)]['on'](_0x5036e4[_0x5210ff(0x239)],_0x2468fd=>{const _0x317667=_0x5210ff;_0x279afb+=_0x2468fd['toString'](),_0x279afb['includes'](_0x5036e4[_0x317667(0x236)])&&_0x279afb['includes']('61.0')&&console['warn'](_0x317667(0x194));});if(previewJvmProcess[_0x5210ff(0x244)]){const _0x3bbeb3=readline[_0x5210ff(0x1da)]({'input':previewJvmProcess['stdout']});_0x3bbeb3['on'](_0x5036e4[_0x5210ff(0x18d)],_0x4f7b6a=>{const _0x4e0fba=_0x5210ff,_0x4a4725=_0x4f7b6a[_0x4e0fba(0x1a7)]();if(!_0x4a4725[_0x4e0fba(0x212)]('{'))return;try{const _0xf02a22=JSON['parse'](_0x4f7b6a),_0x42b932=_0xf02a22[_0x4e0fba(0x18c)];_0x42b932&&previewPending[_0x4e0fba(0x201)](_0x42b932)&&(previewPending[_0x4e0fba(0x185)](_0x42b932)[_0x4e0fba(0x18e)](_0xf02a22),previewPending[_0x4e0fba(0x192)](_0x42b932));}catch(_0x30827c){}});}previewJvmProcess['on'](_0x5036e4['XNXBO'],_0xc8f69b=>{const _0x580bf0=_0x5210ff;previewJvmProcess=null;for(const [,_0x7f57bd]of previewPending)_0x7f57bd[_0x580bf0(0x256)](new Error(_0x5036e4[_0x580bf0(0x17a)]));previewPending[_0x580bf0(0x1f8)](),setTimeout(startPreviewBridge,0x7d0);});}app[a0_0x2603b2(0x17c)]['appendSwitch'](a0_0x2603b2(0x227)),app[a0_0x2603b2(0x17c)][a0_0x2603b2(0x241)]('enable-accelerated-2d-canvas');let mainWindow;function createWindow(){const _0x8390df=a0_0x2603b2,_0x107631={'wVeFW':function(_0x4fdbff,_0x5922e4){return _0x4fdbff===_0x5922e4;},'EUFgn':_0x8390df(0x26c),'TCVwX':function(_0x6a4dd7,_0x3d28ad){return _0x6a4dd7===_0x3d28ad;},'UUxqp':'#00000000','rxZIA':_0x8390df(0x1cc),'WJVsE':_0x8390df(0x1d5),'TzoMG':_0x8390df(0x23e),'rSdgw':_0x8390df(0x1ff),'TmgJq':_0x8390df(0x1ca)};mainWindow=new BrowserWindow({'width':0x1b8,'height':0x2a8,'frame':![],'transparent':!![],'backgroundColor':_0x107631[_0x8390df(0x15a)],'webPreferences':{'nodeIntegration':![],'contextIsolation':!![],'preload':path[_0x8390df(0x1ab)](__dirname,_0x107631[_0x8390df(0x19c)])},'icon':path[_0x8390df(0x1ab)](__dirname,_0x107631[_0x8390df(0x1a4)],_0x107631[_0x8390df(0x18b)])});if(app[_0x8390df(0x1d7)]){const _0x461b38=path[_0x8390df(0x1ab)](__dirname,_0x8390df(0x264),_0x107631[_0x8390df(0x27a)]);mainWindow[_0x8390df(0x242)](_0x461b38);}else mainWindow[_0x8390df(0x172)](_0x8390df(0x1ae));mainWindow['webContents']['on'](_0x8390df(0x17f),(_0x3f19ed,_0x839e94)=>{const _0x1f18c4=_0x8390df;(_0x107631[_0x1f18c4(0x189)](_0x839e94[_0x1f18c4(0x267)],_0x107631['EUFgn'])||_0x839e94[_0x1f18c4(0x199)]&&_0x839e94[_0x1f18c4(0x271)]&&_0x107631[_0x1f18c4(0x23b)](_0x839e94[_0x1f18c4(0x267)],'I'))&&_0x3f19ed[_0x1f18c4(0x1f7)]();}),mainWindow['on'](_0x107631['TmgJq'],()=>{mainWindow=null;});}ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x1fd),async()=>{const _0x38306d=a0_0x2603b2,_0xfc3f98={'kJtgJ':_0x38306d(0x1f4),'KfOSY':_0x38306d(0x1fa),'SnyaP':_0x38306d(0x15e),'vieaq':'All\x20Files'},_0x339e3f=await dialog[_0x38306d(0x22a)](mainWindow,{'properties':[_0xfc3f98['kJtgJ']],'filters':[{'name':_0xfc3f98['KfOSY'],'extensions':[_0xfc3f98[_0x38306d(0x24f)]]},{'name':_0xfc3f98[_0x38306d(0x213)],'extensions':['*']}]});if(!_0x339e3f['canceled']&&_0x339e3f[_0x38306d(0x265)][_0x38306d(0x268)]>0x0)return _0x339e3f[_0x38306d(0x265)][0x0];return null;}),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x1ce),()=>{mainWindow&&mainWindow['minimize']();}),ipcMain[a0_0x2603b2(0x1a0)]('close-window',()=>{const _0x470940=a0_0x2603b2;app[_0x470940(0x1f1)]();}),ipcMain[a0_0x2603b2(0x1a0)]('resize-window',(_0x51f196,{width:_0x43d5d5,height:_0x1b0b9e})=>{const _0x123a71=a0_0x2603b2,_0x1e983e={'eyAvO':function(_0x45d095,_0x49693b){return _0x45d095===_0x49693b;},'CMYPn':_0x123a71(0x1f2),'cdzrf':function(_0x38d2ea,_0x161fa4){return _0x38d2ea===_0x161fa4;}};mainWindow&&_0x1e983e[_0x123a71(0x16e)](typeof _0x43d5d5,_0x1e983e[_0x123a71(0x1e5)])&&_0x1e983e[_0x123a71(0x1c0)](typeof _0x1b0b9e,_0x1e983e[_0x123a71(0x1e5)])&&mainWindow['setSize'](_0x43d5d5,_0x1b0b9e);}),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x1a5),async(_0xddd55b,_0x94d5ca)=>{const _0x2bd56f=a0_0x2603b2,_0x1ac4b3={'SWSpL':function(_0x5cbff4,_0x288e1b,_0x43d3d8){return _0x5cbff4(_0x288e1b,_0x43d3d8);},'hCulJ':_0x2bd56f(0x25d),'LFtSg':_0x2bd56f(0x24b)};try{const _0x3273e9=await _0x1ac4b3[_0x2bd56f(0x262)](fetch,_0x94d5ca,{'headers':{'User-Agent':_0x1ac4b3[_0x2bd56f(0x1fb)]}});if(!_0x3273e9['ok'])return{'ok':![]};const _0x361cbb=await _0x3273e9['arrayBuffer'](),_0x2181dd=Buffer[_0x2bd56f(0x1b7)](_0x361cbb)[_0x2bd56f(0x223)](_0x1ac4b3['LFtSg']);return{'ok':!![],'base64':_0x2181dd};}catch{return{'ok':![]};}});let backendProcess=null;const startBackend=()=>{const _0x4d1310=a0_0x2603b2,_0x5aca11={'ZdIMr':_0x4d1310(0x1a1),'gDtxC':_0x4d1310(0x208),'HZcZF':_0x4d1310(0x184),'uBBnU':_0x4d1310(0x16c),'vxDAA':'Debug','MBzsz':_0x4d1310(0x1c6),'QhwUg':_0x4d1310(0x1ee),'IkerA':_0x4d1310(0x1df),'MiRaX':function(_0x122ff5,_0x469f41,_0x4c916a,_0x684fcd){return _0x122ff5(_0x469f41,_0x4c916a,_0x684fcd);},'iFwSs':_0x4d1310(0x276),'XqvAY':_0x4d1310(0x20e)};let _0x25de06;if(app[_0x4d1310(0x1d7)])_0x25de06=path[_0x4d1310(0x1ab)](process['resourcesPath'],_0x5aca11[_0x4d1310(0x1d0)],_0x5aca11['HZcZF']);else{const _0x39a249=[path[_0x4d1310(0x1ab)](__dirname,_0x4d1310(0x208),_0x5aca11[_0x4d1310(0x209)],_0x5aca11[_0x4d1310(0x1ec)],_0x5aca11['MBzsz'],_0x5aca11[_0x4d1310(0x178)]),path[_0x4d1310(0x1ab)](__dirname,_0x5aca11[_0x4d1310(0x198)],_0x5aca11[_0x4d1310(0x178)])];_0x25de06=_0x39a249[_0x4d1310(0x21e)](_0xd0fc09=>fs[_0x4d1310(0x203)](_0xd0fc09));}if(_0x25de06&&fs[_0x4d1310(0x203)](_0x25de06)){console[_0x4d1310(0x1e9)](_0x5aca11[_0x4d1310(0x207)],_0x25de06);const _0x2e7fc1={...process.env,'SUPABASE_URL':SUPABASE_URL,'SUPABASE_ANON_KEY':SUPABASE_KEY};backendProcess=_0x5aca11[_0x4d1310(0x1dd)](spawn,_0x25de06,[],{'cwd':path[_0x4d1310(0x164)](_0x25de06),'detached':![],'stdio':_0x4d1310(0x1d4),'windowsHide':!![],'env':_0x2e7fc1}),backendProcess['on'](_0x4d1310(0x177),_0x405b57=>{const _0x257317=_0x4d1310;console[_0x257317(0x177)](_0x5aca11['ZdIMr'],_0x405b57);}),backendProcess['on'](_0x5aca11[_0x4d1310(0x21b)],_0x5e1063=>{const _0x1c058d=_0x4d1310;console[_0x1c058d(0x1e9)](_0x1c058d(0x22b)+_0x5e1063),backendProcess=null;});}else console['warn'](_0x5aca11[_0x4d1310(0x180)]);};app['on'](a0_0x2603b2(0x247),()=>{const _0x20bf52=a0_0x2603b2,_0x2b27ab={'BNYST':function(_0xd976f6,_0x2f247c){return _0xd976f6!==_0x2f247c;},'RymcO':_0x20bf52(0x15f)};_0x2b27ab[_0x20bf52(0x25b)](process[_0x20bf52(0x277)],_0x2b27ab['RymcO'])&&app[_0x20bf52(0x1f1)]();});const SUPABASE_URL=a0_0x2603b2(0x171),SUPABASE_KEY=a0_0x2603b2(0x1e2);let latestChangelog='';async function checkForUpdates(){const _0x1c45fc=a0_0x2603b2,_0x560ea8={'aBZaw':_0x1c45fc(0x15d),'EsNIM':function(_0x111a25,_0x2b85cb,_0x34af43){return _0x111a25(_0x2b85cb,_0x34af43);},'wFmNy':_0x1c45fc(0x228),'KHNNn':function(_0x1ad63a,_0x53bc86){return _0x1ad63a>_0x53bc86;},'TEPsL':function(_0x2fdfce,_0x49455d){return _0x2fdfce!==_0x49455d;},'KfQbs':_0x1c45fc(0x1af),'mSbWY':_0x1c45fc(0x208),'XKkhN':'bin','FoDXr':_0x1c45fc(0x174),'JICpa':_0x1c45fc(0x184),'mWPii':_0x1c45fc(0x1ee),'SBifc':'dll','rKTUq':function(_0x52d52e,_0x23d91f){return _0x52d52e(_0x23d91f);},'GAQRB':_0x1c45fc(0x278)};try{console['log'](_0x560ea8['aBZaw']);const _0x1b5e1d=await _0x560ea8['EsNIM'](fetch,SUPABASE_URL+_0x1c45fc(0x25c),{'headers':{'apikey':SUPABASE_KEY,'Authorization':'Bearer\x20'+SUPABASE_KEY}});if(!_0x1b5e1d['ok'])throw new Error(_0x560ea8[_0x1c45fc(0x21d)]);const _0x249078=await _0x1b5e1d[_0x1c45fc(0x190)]();if(_0x560ea8[_0x1c45fc(0x1e1)](_0x249078['length'],0x0)){const _0x4af6c3=_0x249078[0x0],_0x4c5d37=latestChangelog;latestChangelog=_0x4af6c3[_0x1c45fc(0x186)];_0x560ea8['TEPsL'](_0x4c5d37,latestChangelog)&&mainWindow&&mainWindow[_0x1c45fc(0x161)][_0x1c45fc(0x233)](_0x560ea8['KfQbs'],latestChangelog);console[_0x1c45fc(0x1e9)]('Latest\x20version:\x20'+_0x4af6c3['version']);let _0x4e560b;backendProcess&&backendProcess['spawnargs']&&backendProcess[_0x1c45fc(0x246)][_0x1c45fc(0x268)]>0x0&&(_0x4e560b=path[_0x1c45fc(0x164)](path['join'](process[_0x1c45fc(0x272)],_0x560ea8[_0x1c45fc(0x1b2)],_0x1c45fc(0x184))));let _0xec388b;if(app['isPackaged'])_0xec388b=path[_0x1c45fc(0x1ab)](process[_0x1c45fc(0x272)],_0x1c45fc(0x208),_0x1c45fc(0x184));else{const _0xb21ac1=[path[_0x1c45fc(0x1ab)](__dirname,_0x560ea8['mSbWY'],_0x560ea8[_0x1c45fc(0x263)],_0x560ea8['FoDXr'],_0x1c45fc(0x1c6),_0x560ea8[_0x1c45fc(0x1ac)]),path[_0x1c45fc(0x1ab)](__dirname,_0x560ea8['mWPii'],_0x560ea8[_0x1c45fc(0x1ac)])];_0xec388b=_0xb21ac1[_0x1c45fc(0x21e)](_0x5880c7=>fs[_0x1c45fc(0x203)](_0x5880c7));}if(_0xec388b){const _0x3b024a=path[_0x1c45fc(0x1ab)](path[_0x1c45fc(0x164)](_0xec388b),_0x560ea8[_0x1c45fc(0x243)]);!fs[_0x1c45fc(0x203)](_0x3b024a)&&fs['mkdirSync'](_0x3b024a,{'recursive':!![]});const _0x4e0f19=_0x1c45fc(0x1e6)+_0x4af6c3[_0x1c45fc(0x1c4)]+_0x1c45fc(0x204),_0x2d9c84=path[_0x1c45fc(0x1ab)](_0x3b024a,_0x4e0f19);if(!fs['existsSync'](_0x2d9c84)){console[_0x1c45fc(0x1e9)]('Downloading\x20new\x20DLL:\x20'+_0x4e0f19);const _0x5a37cc=await _0x560ea8[_0x1c45fc(0x165)](fetch,_0x4af6c3[_0x1c45fc(0x22d)]);if(_0x5a37cc['ok']){const _0x537e32=await _0x5a37cc[_0x1c45fc(0x19a)]();fs['writeFileSync'](_0x2d9c84,Buffer[_0x1c45fc(0x1b7)](_0x537e32)),console[_0x1c45fc(0x1e9)]('DLL\x20Downloaded\x20successfully.');}}}}}catch(_0x228b64){console[_0x1c45fc(0x177)](_0x560ea8[_0x1c45fc(0x17b)],_0x228b64);}}ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x251),()=>latestChangelog),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x27b),async()=>{return await checkForUpdates(),latestChangelog;}),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x1b3),()=>{const _0x1d5072=a0_0x2603b2,_0x25416a={'xLntK':'Player\x20ESP','hyYYA':_0x1d5072(0x19e),'GMNEl':_0x1d5072(0x1de),'NXQWp':_0x1d5072(0x1ad),'YZJYL':'HUD'};return[{'id':_0x1d5072(0x25a),'label':_0x25416a[_0x1d5072(0x24c)]},{'id':_0x25416a['hyYYA'],'label':_0x25416a[_0x1d5072(0x1a3)]},{'id':_0x25416a['NXQWp'],'label':_0x1d5072(0x1b1)},{'id':_0x25416a[_0x1d5072(0x259)],'label':_0x25416a[_0x1d5072(0x259)]}];});function getDefaultSceneJsonPath(){const _0x572cfb=a0_0x2603b2,_0x202525={'xeRUq':function(_0x404ba3,_0x15e796){return _0x404ba3(_0x15e796);},'QZUfL':_0x572cfb(0x275),'IDRLf':_0x572cfb(0x217)};return path[_0x572cfb(0x1ab)](_0x202525[_0x572cfb(0x193)](getCubemapDir,_0x202525[_0x572cfb(0x1a6)]),_0x202525[_0x572cfb(0x257)]);}ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x16d),async(_0x219c4c,_0x2b583e)=>{const _0x3df70b=a0_0x2603b2,_0x107fde={'wZjgz':function(_0x348f70){return _0x348f70();},'CNHNH':'utf8'},_0x52c47c=_0x2b583e||_0x107fde[_0x3df70b(0x1bc)](getDefaultSceneJsonPath);try{const _0xa6c9c2=fs['readFileSync'](_0x52c47c,_0x107fde[_0x3df70b(0x182)]);return JSON[_0x3df70b(0x1ea)](_0xa6c9c2);}catch(_0x56607b){return null;}}),ipcMain['handle']('preview:load-cubemap-face',async(_0x3a7679,_0x97e073,_0x145565)=>{const _0x247395=a0_0x2603b2,_0x48037b={'WpjkZ':function(_0x13b29f,_0x4c916b){return _0x13b29f(_0x4c916b);},'hnhRF':function(_0x45907f,_0x4df6b7){return _0x45907f+_0x4df6b7;},'mjAhy':_0x247395(0x24b)},_0x599562=_0x48037b[_0x247395(0x1d9)](getCubemapDir,_0x97e073),_0x39623d=path[_0x247395(0x1ab)](_0x599562,_0x247395(0x191)+_0x145565+_0x247395(0x206));try{const _0x273938=fs['readFileSync'](_0x39623d);return _0x48037b[_0x247395(0x1b9)]('data:image/png;base64,',_0x273938[_0x247395(0x223)](_0x48037b[_0x247395(0x160)]));}catch(_0x312a74){return null;}}),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x16f),async(_0x4a41f2,_0x111905)=>{const _0x2a9c8f=a0_0x2603b2,_0x6f209e={'FgseA':function(_0x15b3e2,_0x15d67f){return _0x15b3e2(_0x15d67f);},'ZPbIz':_0x2a9c8f(0x1eb),'yACBa':function(_0x26d234,_0x5e8464){return _0x26d234+_0x5e8464;},'DDLvy':'schema','FlsDd':function(_0x4b510c,_0x588d52,_0xda1cc0){return _0x4b510c(_0x588d52,_0xda1cc0);},'RAzmu':function(_0x6d5dd5,_0x392a40){return _0x6d5dd5(_0x392a40);},'ObOrm':_0x2a9c8f(0x163),'VnCZa':function(_0x540b95,_0x217fc5){return _0x540b95(_0x217fc5);}};if(previewJvmProcess?.[_0x2a9c8f(0x20b)]){const _0x4cd68b=_0x6f209e[_0x2a9c8f(0x226)](require,_0x6f209e[_0x2a9c8f(0x1ed)])[_0x2a9c8f(0x1a9)]();return new Promise((_0x2b68d8,_0x53d11b)=>{const _0x8445d4=_0x2a9c8f;previewPending[_0x8445d4(0x1bf)](_0x4cd68b,{'resolve':_0x2b68d8,'reject':_0x53d11b}),previewJvmProcess['stdin'][_0x8445d4(0x1e0)](_0x6f209e['yACBa'](JSON[_0x8445d4(0x1e3)]({'type':_0x6f209e[_0x8445d4(0x225)],'module':_0x111905,'requestId':_0x4cd68b}),'\x0a')),_0x6f209e['FlsDd'](setTimeout,()=>{const _0x2222d8=_0x8445d4;previewPending['has'](_0x4cd68b)&&(previewPending[_0x2222d8(0x192)](_0x4cd68b),_0x6f209e['FgseA'](_0x53d11b,new Error(_0x6f209e[_0x2222d8(0x1db)])));},0x1388);})[_0x2a9c8f(0x166)](_0x458897=>_0x458897[_0x2a9c8f(0x169)]??_0x458897)['catch'](()=>getStubSchema(_0x111905));}return _0x6f209e[_0x2a9c8f(0x21a)](getStubSchema,_0x111905);}),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x216),async(_0x3030be,_0x357493,_0x504690,_0x51d930)=>{const _0x46ea30=a0_0x2603b2,_0x3ed82a={'QwQWy':function(_0x26f372,_0x1e6abb){return _0x26f372(_0x1e6abb);},'fPEud':_0x46ea30(0x1bd),'qCXpG':function(_0x1c7618,_0x5b60ec){return _0x1c7618+_0x5b60ec;},'SfuQX':_0x46ea30(0x26a),'vDaHY':function(_0x55d160,_0x37c1b2,_0x551b0f){return _0x55d160(_0x37c1b2,_0x551b0f);},'NSOol':function(_0x1f9a4f,_0x24d639){return _0x1f9a4f===_0x24d639;},'WSebB':_0x46ea30(0x20a),'hqWbp':function(_0x3daa4b,_0xe3e8eb){return _0x3daa4b&&_0xe3e8eb;},'UKiTc':function(_0xe4062f,_0x24006b){return _0xe4062f>_0x24006b;},'LwVAE':_0x46ea30(0x163)};if(!previewJvmProcess?.[_0x46ea30(0x20b)])return null;const _0x1387f5=require(_0x3ed82a[_0x46ea30(0x20d)])[_0x46ea30(0x1a9)]();return new Promise((_0x3ad73b,_0x565cf8)=>{const _0x4a1288=_0x46ea30,_0x1d7cca={'byjkz':function(_0x241dd5,_0x298049){return _0x3ed82a['QwQWy'](_0x241dd5,_0x298049);},'RpivR':_0x3ed82a[_0x4a1288(0x232)]};previewPending['set'](_0x1387f5,{'resolve':_0x3ad73b,'reject':_0x565cf8}),previewJvmProcess[_0x4a1288(0x20b)]['write'](_0x3ed82a[_0x4a1288(0x20f)](JSON[_0x4a1288(0x1e3)]({'type':_0x3ed82a[_0x4a1288(0x1ef)],'module':_0x357493,'config':_0x504690,'entities':_0x51d930,'requestId':_0x1387f5}),'\x0a')),_0x3ed82a[_0x4a1288(0x214)](setTimeout,()=>{const _0x1da5c5=_0x4a1288;previewPending[_0x1da5c5(0x201)](_0x1387f5)&&(previewPending[_0x1da5c5(0x192)](_0x1387f5),_0x1d7cca[_0x1da5c5(0x1d2)](_0x565cf8,new Error(_0x1d7cca[_0x1da5c5(0x1b8)])));},0x7d0);})[_0x46ea30(0x166)](_0x1ab498=>{const _0x230729=_0x46ea30;if(!_0x1ab498)return null;const _0x139475=_0x3ed82a[_0x230729(0x210)](_0x1ab498[_0x230729(0x1d6)],_0x3ed82a['WSebB'])||_0x3ed82a['NSOol'](_0x1ab498[_0x230729(0x1d6)],_0x230729(0x167)),_0x3a5341=_0x1ab498['data']??_0x1ab498[_0x230729(0x240)]??_0x1ab498[_0x230729(0x24b)];if(_0x3ed82a['hqWbp'](_0x139475,_0x3a5341)&&_0x1ab498[_0x230729(0x22c)]>0x0&&_0x3ed82a[_0x230729(0x205)](_0x1ab498['height'],0x0))return{'width':_0x1ab498[_0x230729(0x22c)],'height':_0x1ab498[_0x230729(0x196)],'data':_0x3a5341};return null;})[_0x46ea30(0x1dc)](()=>null);});function getStubSchema(_0x1862d3){const _0x18c0aa=a0_0x2603b2,_0x43cadd={'uyvsu':'color','MQMYX':_0x18c0aa(0x1c1),'wccHg':_0x18c0aa(0x20c),'FxtyT':_0x18c0aa(0x24a),'gQcxI':_0x18c0aa(0x16a),'obcfq':_0x18c0aa(0x215)};return{'moduleId':_0x1862d3,'fields':[{'id':_0x43cadd['uyvsu'],'label':_0x18c0aa(0x273),'type':_0x43cadd[_0x18c0aa(0x252)],'default':_0x43cadd[_0x18c0aa(0x23f)]},{'id':_0x43cadd[_0x18c0aa(0x1c7)],'label':_0x43cadd['FxtyT'],'type':_0x43cadd[_0x18c0aa(0x1b0)],'min':0x1,'max':0x5,'step':0x1,'default':0x2},{'id':_0x18c0aa(0x1a2),'label':_0x43cadd['obcfq'],'type':_0x18c0aa(0x25e),'default':!![]}]};}function a0_0x3990(_0x4cda84,_0x125da4){_0x4cda84=_0x4cda84-0x15a;const _0x5543e8=a0_0x5543();let _0x399054=_0x5543e8[_0x4cda84];if(a0_0x3990['cDgKvC']===undefined){var _0x40a845=function(_0x4a6249){const _0x567466='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x5ba5c8='',_0x3d56b4='';for(let _0x39d195=0x0,_0x53ab0a,_0x569d13,_0x1800a0=0x0;_0x569d13=_0x4a6249['charAt'](_0x1800a0++);~_0x569d13&&(_0x53ab0a=_0x39d195%0x4?_0x53ab0a*0x40+_0x569d13:_0x569d13,_0x39d195++%0x4)?_0x5ba5c8+=String['fromCharCode'](0xff&_0x53ab0a>>(-0x2*_0x39d195&0x6)):0x0){_0x569d13=_0x567466['indexOf'](_0x569d13);}for(let _0x45cb64=0x0,_0x1534b2=_0x5ba5c8['length'];_0x45cb64<_0x1534b2;_0x45cb64++){_0x3d56b4+='%'+('00'+_0x5ba5c8['charCodeAt'](_0x45cb64)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x3d56b4);};a0_0x3990['eaYBVE']=_0x40a845,a0_0x3990['pftnnk']={},a0_0x3990['cDgKvC']=!![];}const _0x1dd674=_0x5543e8[0x0],_0x4b0c81=_0x4cda84+_0x1dd674,_0x4e1a40=a0_0x3990['pftnnk'][_0x4b0c81];return!_0x4e1a40?(_0x399054=a0_0x3990['eaYBVE'](_0x399054),a0_0x3990['pftnnk'][_0x4b0c81]=_0x399054):_0x399054=_0x4e1a40,_0x399054;}function getStubFrame(){const _0x558c3e=a0_0x2603b2,_0x1c3b18={'EmpwN':function(_0x5324cc,_0x4a81c2){return _0x5324cc*_0x4a81c2;},'nfHCB':'base64'},_0x274461=0x140,_0x589e3c=0xb4,_0x356a2c=Buffer[_0x558c3e(0x173)](_0x1c3b18[_0x558c3e(0x1f5)](_0x1c3b18['EmpwN'](_0x274461,_0x589e3c),0x4),0x0);return{'width':_0x274461,'height':_0x589e3c,'data':_0x356a2c[_0x558c3e(0x223)](_0x1c3b18[_0x558c3e(0x23a)])};}protocol[a0_0x2603b2(0x24e)]([{'scheme':a0_0x2603b2(0x26e),'privileges':{'standard':!![],'secure':!![],'supportFetchAPI':!![]}}]),app['whenReady']()['then'](()=>{const _0x1dc210=a0_0x2603b2,_0x27be5b={'dxHYN':function(_0x2885b6,_0x546f14){return _0x2885b6===_0x546f14;},'hhJqR':function(_0x34e611){return _0x34e611();},'nhSjG':function(_0x4183f5){return _0x4183f5();},'mpJCy':function(_0x3f8cbf){return _0x3f8cbf();},'MogNH':function(_0x53aefb,_0x3214a7,_0x1bda7c){return _0x53aefb(_0x3214a7,_0x1bda7c);},'LgHgv':function(_0x5885c2,_0x48551c){return _0x5885c2*_0x48551c;},'wUezH':_0x1dc210(0x1b4)};_0x27be5b[_0x1dc210(0x19f)](registerSceneProtocol),startPreviewBridge(),_0x27be5b['hhJqR'](startBackend),_0x27be5b[_0x1dc210(0x16b)](createWindow),_0x27be5b[_0x1dc210(0x1fc)](checkForUpdates),_0x27be5b['MogNH'](setInterval,()=>{checkForUpdates();},0x3e8*0x3c*0x5),_0x27be5b[_0x1dc210(0x1ba)](setInterval,()=>{const _0x2f73a7=_0x1dc210;if(app[_0x2f73a7(0x1d7)])autoUpdater[_0x2f73a7(0x238)]();},_0x27be5b[_0x1dc210(0x231)](0x3e8,0xf)),app['on'](_0x27be5b['wUezH'],()=>{const _0x45b1c2=_0x1dc210;_0x27be5b[_0x45b1c2(0x17e)](BrowserWindow[_0x45b1c2(0x274)]()[_0x45b1c2(0x268)],0x0)&&_0x27be5b[_0x45b1c2(0x19f)](createWindow);});}),autoUpdater[a0_0x2603b2(0x261)]=![],autoUpdater[a0_0x2603b2(0x220)]=!![],ipcMain['handle'](a0_0x2603b2(0x162),()=>{const _0x5778f3=a0_0x2603b2;if(app[_0x5778f3(0x1d7)])autoUpdater[_0x5778f3(0x238)]();}),ipcMain['handle'](a0_0x2603b2(0x183),()=>{const _0x32b054=a0_0x2603b2;if(app[_0x32b054(0x1d7)])autoUpdater[_0x32b054(0x235)]();}),ipcMain[a0_0x2603b2(0x1a0)](a0_0x2603b2(0x1c9),()=>{if(app['isPackaged'])autoUpdater['quitAndInstall']();}),autoUpdater['on']('update-available',_0x3fb821=>{const _0x1d36d0=a0_0x2603b2;if(mainWindow)mainWindow['webContents']['send'](_0x1d36d0(0x1c5),_0x3fb821);}),autoUpdater['on']('update-not-available',_0x5cf5f8=>{const _0x4c9073=a0_0x2603b2,_0x3f3ebb={'fYtdG':_0x4c9073(0x188)};if(mainWindow)mainWindow[_0x4c9073(0x161)][_0x4c9073(0x233)](_0x3f3ebb['fYtdG'],_0x5cf5f8);}),autoUpdater['on'](a0_0x2603b2(0x254),_0x598ca2=>{const _0x2d5432=a0_0x2603b2,_0x4b6d99={'CSHLD':'updater:progress'};if(mainWindow)mainWindow[_0x2d5432(0x161)][_0x2d5432(0x233)](_0x4b6d99['CSHLD'],_0x598ca2);}),autoUpdater['on'](a0_0x2603b2(0x1c8),_0x2de69b=>{const _0x3035a5=a0_0x2603b2,_0x1f7a1e={'YDbSd':_0x3035a5(0x222)};if(mainWindow)mainWindow[_0x3035a5(0x161)][_0x3035a5(0x233)](_0x1f7a1e[_0x3035a5(0x234)],_0x2de69b);}),autoUpdater['on'](a0_0x2603b2(0x177),_0x3c2281=>{const _0x54659c=a0_0x2603b2;if(mainWindow)mainWindow[_0x54659c(0x161)][_0x54659c(0x233)](_0x54659c(0x1aa),_0x3c2281[_0x54659c(0x230)]||_0x3c2281[_0x54659c(0x223)]());});
+const { app, BrowserWindow, ipcMain, dialog, protocol } = require('electron');
+const path = require('path');
+const os = require('os');
+const { spawn } = require('child_process');
+const fs = require('fs');
+const readline = require('readline');
+const { autoUpdater } = require('electron-updater');
+
+// Setup persistent file logger in .hades
+const hadesDir = path.join(os.homedir(), '.hades');
+if (!fs.existsSync(hadesDir)) fs.mkdirSync(hadesDir, { recursive: true });
+const logFile = path.join(hadesDir, 'debug_launcher.txt');
+
+function writeDebug(msg) {
+  try {
+    const time = new Date().toISOString();
+    fs.appendFileSync(logFile, `[${time}] ${msg}\n`);
+  } catch (e) {}
+}
+
+writeDebug('=== LAUNCHER STARTING ===');
+writeDebug(`Node Integration: false, Context Isolation: true`);
+
+// Native crash reporting for debugging invisible external machine crashes
+process.on('uncaughtException', (error) => {
+  writeDebug(`[FATAL] Uncaught Exception: ${error.stack || error.message}`);
+  dialog.showErrorBox('Hades Critical Crash', `An unexpected error occurred in the core process:\n\n${error.stack || error.message}`);
+});
+process.on('unhandledRejection', (reason) => {
+  writeDebug(`[FATAL] Unhandled Rejection: ${reason instanceof Error ? reason.stack : String(reason)}`);
+  dialog.showErrorBox('Hades Unhandled Rejection', `A background task failed critically:\n\n${reason instanceof Error ? reason.stack : String(reason)}`);
+});
+
+autoUpdater.autoDownload = false;
+
+// Preview SDK JAR path (Visual Configurator ESP overlay)
+function getPreviewSdkJarPath() {
+  const base = app.isPackaged ? process.resourcesPath : __dirname;
+  return path.join(base, 'assets', 'preview-sdk.jar');
+}
+
+// Cubemap path (Visual Configurator panorama) — same base as JAR for dev vs packaged
+function getCubemapDir(scenePath) {
+  const rel = (scenePath || 'PlayerESP/scene_20260311_003507').replace(/\\/g, path.sep);
+  return app.isPackaged
+    ? path.join(__dirname, 'dist', 'assets', 'scenes', rel)
+    : path.join(__dirname, 'public', 'assets', 'scenes', rel);
+}
+
+// Custom protocol so renderer can load cubemap PNGs by URL (avoids IPC size limit on base64)
+function registerSceneProtocol() {
+  protocol.registerFileProtocol('scene', (request, callback) => {
+    try {
+      const pathname = request.url.replace(/^scene:\/\/[^/]+\//, '').replace(/%20/g, ' ');
+      const parts = pathname.split(/\/|\\/).filter(Boolean);
+      if (parts.length < 2) return callback({ error: -2 });
+      const file = parts.pop();
+      const scenePath = parts.join('/');
+      const dir = getCubemapDir(scenePath);
+      const filePath = path.join(dir, file);
+      const exists = fs.existsSync(filePath);
+      if (exists) {
+        callback({ path: filePath });
+      } else {
+        writeDebug(`[Cubemap] scene:// file not found: ${filePath}`);
+        callback({ error: -2 });
+      }
+    } catch (e) {
+      writeDebug(`[Cubemap] scene:// protocol error: ${e.message}`);
+      callback({ error: -2 });
+    }
+  });
+}
+
+// Preview SDK bridge: spawns JAR, JSON over stdin/stdout (requires Java 17+)
+let previewJvmProcess = null;
+const previewPending = new Map();
+
+function startPreviewBridge() {
+  const jarPath = getPreviewSdkJarPath();
+  if (!fs.existsSync(jarPath)) {
+    console.warn('[PreviewBridge] JAR not found:', jarPath);
+    return;
+  }
+  // Prefer JAVA_HOME; then try common Windows JDK paths (Electron often has a different PATH)
+  const ext = process.platform === 'win32' ? '.exe' : '';
+  const candidates = [];
+  if (process.env.JAVA_HOME) {
+    candidates.push(path.join(process.env.JAVA_HOME, 'bin', 'java' + ext));
+  }
+  if (process.platform === 'win32') {
+    const pf = process.env['ProgramFiles'] || 'C:\\Program Files';
+    try {
+      const javaDir = path.join(pf, 'Java');
+      if (fs.existsSync(javaDir)) {
+        const dirs = fs.readdirSync(javaDir).filter((d) => d.startsWith('jdk-'));
+        dirs.sort((a, b) => (parseInt(b.replace(/\D/g, ''), 10) || 0) - (parseInt(a.replace(/\D/g, ''), 10) || 0));
+        dirs.forEach((d) => candidates.push(path.join(javaDir, d, 'bin', 'java' + ext)));
+      }
+    } catch (_) {}
+    candidates.push('C:\\Program Files\\Java\\jdk-17\\bin\\java.exe');
+    candidates.push('C:\\Program Files\\Java\\jdk-21\\bin\\java.exe');
+  }
+  candidates.push('java');
+  const javaBin = candidates.find((p) => {
+    try {
+      return fs.existsSync(p);
+    } catch {
+      return false;
+    }
+  }) || 'java';
+  console.log('[PreviewBridge] Using Java:', javaBin);
+  previewJvmProcess = spawn(javaBin, ['-jar', jarPath], {
+    stdio: ['pipe', 'pipe', 'pipe'],
+    windowsHide: true,
+  });
+  
+  previewJvmProcess.on('error', (err) => {
+    console.warn('[PreviewBridge] Failed to start Java process:', err.message);
+    previewJvmProcess = null;
+    for (const [, p] of previewPending) p.reject(new Error('JVM failed to start'));
+    previewPending.clear();
+  });
+
+  if (!previewJvmProcess) return;
+
+  let stderrBuf = '';
+  if (previewJvmProcess.stderr) {
+    previewJvmProcess.stderr.on('data', (chunk) => {
+      stderrBuf += chunk.toString();
+      if (stderrBuf.includes('UnsupportedClassVersionError') && stderrBuf.includes('61.0')) {
+        console.warn('[PreviewBridge] preview-sdk.jar requires Java 17+. Install JDK 17 and set JAVA_HOME or add it to PATH.');
+      }
+    });
+  }
+  if (previewJvmProcess.stdout) {
+    const rl = readline.createInterface({ input: previewJvmProcess.stdout });
+    rl.on('line', (line) => {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('{')) return;
+      try {
+        const msg = JSON.parse(line);
+        const id = msg.requestId;
+        if (id && previewPending.has(id)) {
+          previewPending.get(id).resolve(msg);
+          previewPending.delete(id);
+        }
+      } catch (_) {}
+    });
+  }
+
+  previewJvmProcess.on('exit', (code) => {
+    previewJvmProcess = null;
+    for (const [, p] of previewPending) p.reject(new Error('JVM exited'));
+    previewPending.clear();
+    setTimeout(startPreviewBridge, 2000);
+  });
+}
+
+// WebGL rendering config (GPU force flags removed to prevent invisible windows on blacklisted drivers)
+
+let mainWindow;
+
+function createWindow() {
+  writeDebug('[App] createWindow called');
+  mainWindow = new BrowserWindow({
+    width: 440,
+    height: 680,
+    frame: false, // no Windows title bar – custom drag via WebkitAppRegion
+    transparent: true,
+    backgroundColor: '#00000000',
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
+    },
+    icon: path.join(__dirname, 'public', 'icon.png')
+  });
+
+  writeDebug(`[App] BrowserWindow created. isPackaged=${app.isPackaged}`);
+
+  // Load the appropriate URL based on environment
+  if (app.isPackaged) {
+    // Production: load from built files
+    const indexPath = path.join(__dirname, 'dist', 'index.html');
+    writeDebug(`[App] Loading layout from: ${indexPath}`);
+    mainWindow.loadFile(indexPath).then(() => {
+      writeDebug('[App] loadFile resolved successfully');
+    }).catch(e => {
+      writeDebug(`[FATAL] loadFile rejected: ${e.message}`);
+    });
+  } else {
+    // Development: load from Vite dev server
+    writeDebug('[App] Loading dev URL');
+    mainWindow.loadURL('http://localhost:5173');
+  }
+
+
+
+
+  // Disable DevTools (no F12 / Ctrl+Shift+I)
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.key === 'F12' || (input.control && input.shift && input.key === 'I')) {
+      event.preventDefault();
+    }
+  });
+
+
+  mainWindow.on('closed', () => {
+
+    mainWindow = null;
+  });
+}
+
+// IPC Handlers for file dialog
+ipcMain.handle('open-file-dialog', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openFile'],
+    filters: [
+      { name: 'DLL Files', extensions: ['dll'] },
+      { name: 'All Files', extensions: ['*'] }
+    ]
+  });
+
+  if (!result.canceled && result.filePaths.length > 0) {
+    return result.filePaths[0];
+  }
+  return null;
+});
+
+// IPC Handlers for window controls
+ipcMain.handle('minimize-window', () => {
+  if (mainWindow) {
+    mainWindow.minimize();
+  }
+});
+
+ipcMain.handle('close-window', () => {
+  app.quit();
+});
+
+ipcMain.handle('resize-window', (_event, { width, height }) => {
+  if (mainWindow && typeof width === 'number' && typeof height === 'number') {
+    mainWindow.setSize(width, height);
+  }
+});
+
+// OpenGL ESP Preview: embedded in Visual preview area (child window)
+// REMOVED: Now handled via WebGL in Renderer process.
+
+// Skin per Main laden (kein CORS in Electron)
+ipcMain.handle('fetch-skin', async (_event, url) => {
+  try {
+    const res = await fetch(url, { headers: { 'User-Agent': 'HadesLauncher/1.0' } });
+    if (!res.ok) return { ok: false };
+    const buf = await res.arrayBuffer();
+    const base64 = Buffer.from(buf).toString('base64');
+    return { ok: true, base64 };
+  } catch {
+    return { ok: false };
+  }
+});
+
+// Backend Process Management
+let backendProcess = null;
+
+const startBackend = () => {
+  let backendPath;
+  if (app.isPackaged) {
+    backendPath = path.join(process.resourcesPath, 'backend', 'backend.exe');
+  } else {
+    // Try development paths
+    const potentialPaths = [
+      path.join(__dirname, 'backend', 'bin', 'Debug', 'net8.0', 'backend.exe'),
+      path.join(__dirname, 'dist-backend', 'backend.exe')
+    ];
+    backendPath = potentialPaths.find(p => fs.existsSync(p));
+  }
+
+  if (backendPath && fs.existsSync(backendPath)) {
+    console.log('Starting backend from:', backendPath);
+    const env = { ...process.env, SUPABASE_URL: SUPABASE_URL, SUPABASE_ANON_KEY: SUPABASE_KEY };
+    backendProcess = spawn(backendPath, [], {
+      cwd: path.dirname(backendPath),
+      detached: false,
+      stdio: 'ignore',
+      windowsHide: true,
+      env
+    });
+
+    backendProcess.on('error', (err) => {
+      console.error('Failed to start backend:', err);
+    });
+
+    backendProcess.on('exit', (code) => {
+      console.log(`Backend exited with code ${code}`);
+      backendProcess = null;
+    });
+  } else {
+    console.warn('Backend executable not found. Skipping auto-start.');
+  }
+};
+
+// App lifecycle
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+// Update & DLL Management
+const SUPABASE_URL = "https://szxxwxwityixqzzmarlq.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6eHh3eHdpdHlpeHF6em1hcmxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NTkyNDQsImV4cCI6MjA4NjQzNTI0NH0.5XSYOM1VZrKOeQJSErdI-J2PcvWNo2YLHrCfQ5MNxRs";
+
+let latestChangelog = "";
+
+async function checkForUpdates() {
+  try {
+    console.log("Checking for updates...");
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/launcher_versions?select=*&order=created_at.desc&limit=1`, {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${SUPABASE_KEY}`
+      }
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch updates");
+    const data = await response.json();
+
+    if (data.length > 0) {
+      const latest = data[0];
+      const oldChangelog = latestChangelog;
+      latestChangelog = latest.changelog;
+
+      // Notify renderer if changelog changed
+      if (oldChangelog !== latestChangelog && mainWindow) {
+        mainWindow.webContents.send('changelog-updated', latestChangelog);
+      }
+
+      console.log(`Latest version: ${latest.version}`);
+
+      // ... (rest of DLL management logic)
+      let backendDir;
+      if (backendProcess && backendProcess.spawnargs && backendProcess.spawnargs.length > 0) {
+        backendDir = path.dirname(path.join(process.resourcesPath, 'backend', 'backend.exe'));
+      }
+
+      let backendPath;
+      if (app.isPackaged) {
+        backendPath = path.join(process.resourcesPath, 'backend', 'backend.exe');
+      } else {
+        const potentialPaths = [
+          path.join(__dirname, 'backend', 'bin', 'Debug', 'net8.0', 'backend.exe'),
+          path.join(__dirname, 'dist-backend', 'backend.exe')
+        ];
+        backendPath = potentialPaths.find(p => fs.existsSync(p));
+      }
+
+      if (backendPath) {
+        const dllDir = path.join(path.dirname(backendPath), 'dll');
+        if (!fs.existsSync(dllDir)) {
+          fs.mkdirSync(dllDir, { recursive: true });
+        }
+
+        const dllName = `client-${latest.version}.dll`;
+        const dllPath = path.join(dllDir, dllName);
+
+        if (!fs.existsSync(dllPath)) {
+          console.log(`Downloading new DLL: ${dllName}`);
+          const downloadRes = await fetch(latest.download_url);
+          if (downloadRes.ok) {
+            const buffer = await downloadRes.arrayBuffer();
+            fs.writeFileSync(dllPath, Buffer.from(buffer));
+            console.log("DLL Downloaded successfully.");
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Update check failed:", err);
+  }
+}
+
+ipcMain.handle('get-changelog', () => latestChangelog);
+ipcMain.handle('refresh-changelog', async () => {
+  await checkForUpdates();
+  return latestChangelog;
+});
+
+// Stub module list for Visual Configurator so the UI is testable without real ScenePacks.
+ipcMain.handle('preview:list-modules', () => {
+  return [
+    { id: 'PlayerESP', label: 'Player ESP' },
+    { id: 'ChestESP', label: 'Chest ESP' },
+    { id: 'ItemESP', label: 'Item ESP' },
+    { id: 'HUD', label: 'HUD' },
+  ];
+});
+
+// Default scene.json path for Visual Configurator (hitbox positions)
+function getDefaultSceneJsonPath() {
+  return path.join(getCubemapDir('PlayerESP/scene_20260311_003507'), 'scene.json');
+}
+
+// Load scene.json for panorama hitboxes (positions from this file, real-time reload)
+ipcMain.handle('preview:load-scene', async (_, filePath) => {
+  const p = filePath || getDefaultSceneJsonPath();
+  try {
+    const raw = fs.readFileSync(p, 'utf8');
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+});
+
+// Load one cubemap face (avoids IPC size limit; renderer requests 6 times)
+ipcMain.handle('preview:load-cubemap-face', async (_, scenePath, face) => {
+  const dir = getCubemapDir(scenePath);
+  const filePath = path.join(dir, `cubemap_${face}.png`);
+  try {
+    const buf = fs.readFileSync(filePath);
+    return 'data:image/png;base64,' + buf.toString('base64');
+  } catch (e) {
+    return null;
+  }
+});
+
+// Single set of IPC handlers: delegate to JVM when running, otherwise stub
+ipcMain.handle('preview:schema', async (_, moduleId) => {
+  if (previewJvmProcess?.stdin) {
+    const id = require('crypto').randomUUID();
+    return new Promise((resolve, reject) => {
+      previewPending.set(id, { resolve, reject });
+      previewJvmProcess.stdin.write(JSON.stringify({ type: 'schema', module: moduleId, requestId: id }) + '\n');
+      setTimeout(() => {
+        if (previewPending.has(id)) {
+          previewPending.delete(id);
+          reject(new Error('Schema timeout'));
+        }
+      }, 5000);
+    }).then((r) => r.schema ?? r).catch(() => getStubSchema(moduleId));
+  }
+  return getStubSchema(moduleId);
+});
+
+ipcMain.handle('preview:render', async (_, moduleId, config, entities) => {
+  if (!previewJvmProcess?.stdin) return null;
+  const id = require('crypto').randomUUID();
+  return new Promise((resolve, reject) => {
+    previewPending.set(id, { resolve, reject });
+    previewJvmProcess.stdin.write(JSON.stringify({ type: 'render', module: moduleId, config, entities, requestId: id }) + '\n');
+    setTimeout(() => {
+      if (previewPending.has(id)) {
+        previewPending.delete(id);
+        reject(new Error('Render timeout'));
+      }
+    }, 2000);
+  }).then((r) => {
+    if (!r) return null;
+    const isFrame = r.type === 'frame' || r.type === 'image';
+    const data = r.data ?? r.pixels ?? r.base64;
+    if (isFrame && data && r.width > 0 && r.height > 0) {
+      return { width: r.width, height: r.height, data };
+    }
+    return null;
+  }).catch(() => null);
+});
+
+function getStubSchema(moduleId) {
+  return {
+    moduleId,
+    fields: [
+      { id: 'color', label: 'ESP Color', type: 'color', default: '#55ff55' },
+      { id: 'thickness', label: 'Line Thickness', type: 'slider', min: 1, max: 5, step: 1, default: 2 },
+      { id: 'enabled', label: 'Enabled', type: 'toggle', default: true },
+    ],
+  };
+}
+
+function getStubFrame() {
+  const width = 320;
+  const height = 180;
+  const buf = Buffer.alloc(width * height * 4, 0);
+  return { width, height, data: buf.toString('base64') };
+}
+
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'scene', privileges: { standard: true, secure: true, supportFetchAPI: true } }
+]);
+
+app.whenReady().then(() => {
+  writeDebug('[Core] App is ready! Starting initialization sequence...');
+  registerSceneProtocol();
+  // startPreviewBridge(); // Temporarily disabled to test if this freezes external PCs
+
+  writeDebug('[Core] Spawning backend.exe...');
+  startBackend();
+  writeDebug('[Core] Creating Chromium window...');
+  createWindow();
+
+  // Initial check (DLLs)
+  checkForUpdates();
+
+  // Periodic check (every 5 minutes for Supabase DLLs)
+  setInterval(() => {
+    checkForUpdates();
+  }, 1000 * 60 * 5);
+
+  // Fast-polling check (every 15 seconds for GitHub Launcher Updates)
+  setInterval(() => {
+    if (app.isPackaged) autoUpdater.checkForUpdates();
+  }, 1000 * 15);
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+// Auto-Updater handlers
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = true;
+
+ipcMain.handle('app:check-updates', () => {
+  if (app.isPackaged) autoUpdater.checkForUpdates();
+});
+
+ipcMain.handle('app:download-update', () => {
+  if (app.isPackaged) autoUpdater.downloadUpdate();
+});
+
+ipcMain.handle('app:quit-and-install', () => {
+  if (app.isPackaged) autoUpdater.quitAndInstall();
+});
+
+autoUpdater.on('update-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('updater:available', info);
+});
+autoUpdater.on('update-not-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('updater:not-available', info);
+});
+autoUpdater.on('download-progress', (progressObj) => {
+  if (mainWindow) mainWindow.webContents.send('updater:progress', progressObj);
+});
+autoUpdater.on('update-downloaded', (info) => {
+  if (mainWindow) mainWindow.webContents.send('updater:downloaded', info);
+});
+autoUpdater.on('error', (err) => {
+  if (mainWindow) mainWindow.webContents.send('updater:error', err.message || err.toString());
+});

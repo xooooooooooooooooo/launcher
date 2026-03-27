@@ -6,11 +6,28 @@ const fs = require('fs');
 const readline = require('readline');
 const { autoUpdater } = require('electron-updater');
 
+// Setup persistent file logger in .hades
+const hadesDir = path.join(os.homedir(), '.hades');
+if (!fs.existsSync(hadesDir)) fs.mkdirSync(hadesDir, { recursive: true });
+const logFile = path.join(hadesDir, 'debug_launcher.txt');
+
+function writeDebug(msg) {
+  try {
+    const time = new Date().toISOString();
+    fs.appendFileSync(logFile, `[${time}] ${msg}\n`);
+  } catch (e) {}
+}
+
+writeDebug('=== LAUNCHER STARTING ===');
+writeDebug(`Node Integration: false, Context Isolation: true`);
+
 // Native crash reporting for debugging invisible external machine crashes
 process.on('uncaughtException', (error) => {
+  writeDebug(`[FATAL] Uncaught Exception: ${error.stack || error.message}`);
   dialog.showErrorBox('Hades Critical Crash', `An unexpected error occurred in the core process:\n\n${error.stack || error.message}`);
 });
 process.on('unhandledRejection', (reason) => {
+  writeDebug(`[FATAL] Unhandled Rejection: ${reason instanceof Error ? reason.stack : String(reason)}`);
   dialog.showErrorBox('Hades Unhandled Rejection', `A background task failed critically:\n\n${reason instanceof Error ? reason.stack : String(reason)}`);
 });
 
@@ -45,11 +62,11 @@ function registerSceneProtocol() {
       if (exists) {
         callback({ path: filePath });
       } else {
-        console.warn('[Cubemap] scene:// file not found:', filePath);
+        writeDebug(`[Cubemap] scene:// file not found: ${filePath}`);
         callback({ error: -2 });
       }
     } catch (e) {
-      console.warn('[Cubemap] scene:// protocol error', e.message);
+      writeDebug(`[Cubemap] scene:// protocol error: ${e.message}`);
       callback({ error: -2 });
     }
   });
@@ -140,13 +157,12 @@ function startPreviewBridge() {
   });
 }
 
-// Enable WebGL/GLSL in Electron (otherwise it may be disabled or use software renderer)
-app.commandLine.appendSwitch('ignore-gpu-blocklist');
-app.commandLine.appendSwitch('enable-accelerated-2d-canvas');
+// WebGL rendering config (GPU force flags removed to prevent invisible windows on blacklisted drivers)
 
 let mainWindow;
 
 function createWindow() {
+  writeDebug('[App] createWindow called');
   mainWindow = new BrowserWindow({
     width: 440,
     height: 680,
@@ -161,15 +177,21 @@ function createWindow() {
     icon: path.join(__dirname, 'public', 'icon.png')
   });
 
-
+  writeDebug(`[App] BrowserWindow created. isPackaged=${app.isPackaged}`);
 
   // Load the appropriate URL based on environment
   if (app.isPackaged) {
     // Production: load from built files
     const indexPath = path.join(__dirname, 'dist', 'index.html');
-    mainWindow.loadFile(indexPath);
+    writeDebug(`[App] Loading layout from: ${indexPath}`);
+    mainWindow.loadFile(indexPath).then(() => {
+      writeDebug('[App] loadFile resolved successfully');
+    }).catch(e => {
+      writeDebug(`[FATAL] loadFile rejected: ${e.message}`);
+    });
   } else {
     // Development: load from Vite dev server
+    writeDebug('[App] Loading dev URL');
     mainWindow.loadURL('http://localhost:5173');
   }
 
@@ -467,10 +489,13 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 app.whenReady().then(() => {
+  writeDebug('[Core] App is ready! Starting initialization sequence...');
   registerSceneProtocol();
-  startPreviewBridge();
+  // startPreviewBridge(); // Temporarily disabled to test if this freezes external PCs
 
+  writeDebug('[Core] Spawning backend.exe...');
   startBackend();
+  writeDebug('[Core] Creating Chromium window...');
   createWindow();
 
   // Initial check (DLLs)
