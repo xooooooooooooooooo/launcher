@@ -29,9 +29,9 @@ module.exports = {
     icon: 'public/icon.png',
   },
   nsis: {
-    oneClick: true,
+    oneClick: false,
     perMachine: true,
-    allowToChangeInstallationDirectory: false,
+    allowToChangeInstallationDirectory: true,
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
     runAfterFinish: true,

@@ -573,10 +573,10 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
     <AnimatePresence>
       {updateReady && (
         <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg rounded-2xl border border-red-500/30 bg-red-950/40 backdrop-blur-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-[0_20px_50px_rgba(220,38,38,0.25),inset_0_1px_2px_rgba(255,255,255,0.1)] overflow-hidden"
+          initial={{ opacity: 0, y: 50, x: -50 }}
+          animate={{ opacity: 1, y: 0, x: 0 }}
+          exit={{ opacity: 0, y: 50, x: -50 }}
+          className="absolute bottom-8 left-8 z-[100] w-full max-w-[400px] rounded-2xl border border-red-500/30 bg-red-950/40 backdrop-blur-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-[0_20px_50px_rgba(220,38,38,0.25),inset_0_1px_2px_rgba(255,255,255,0.1)] overflow-hidden"
         >
           {/* Internal red glow */}
           <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-red-500/10 pointer-events-none" />
