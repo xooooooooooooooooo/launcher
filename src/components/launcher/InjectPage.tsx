@@ -2,9 +2,10 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, CheckCircle2, AlertCircle, Loader2, Shield, Cpu, Terminal, Activity } from "lucide-react";
 import type { Status, Process, DllFile, BackendStatus } from "@/pages/Index";
+import { useSettings } from "@/context/SettingsContext";
 
-const isElectron = typeof window !== "undefined" && (window as any).require;
-const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
+const isElectron = typeof window !== "undefined" && window.electron;
+const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 
 interface InjectPageProps {
   status: Status;
@@ -40,6 +41,7 @@ const InjectPage = ({
   apiBaseUrl,
 }: InjectPageProps) => {
   const hasProcesses = processes.length > 0;
+  const { settings } = useSettings();
 
   // Typewriter effect state
   const [typedLogs, setTypedLogs] = React.useState<string[]>([]);

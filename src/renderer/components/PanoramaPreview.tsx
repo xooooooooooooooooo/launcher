@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { PanoramaRenderer, type CubemapPaths } from "../preview/PanoramaRenderer";
 import { OverlayCompositor } from "../preview/OverlayCompositor";
-import type { ScenePack, SceneEntity, ScreenEntity, ConfigSchema } from "../preview/types";
-import { ConfigPanel } from "./ConfigPanel";
-import { ModuleSelector } from "./ModuleSelector";
+import type { ScenePack, SceneEntity, ScreenEntity } from "../preview/types";
 
 const SKYBOX_BASE = "./assets/skybox";
 
@@ -41,7 +39,16 @@ function buildPackFromRaw(
   return { pack, camYaw, camPitch };
 }
 
-export function PanoramaPreview() {
+export interface PanoramaPreviewHandle {
+  updateConfig: (cfg: Record<string, unknown>) => void;
+}
+
+interface PanoramaPreviewProps {
+  activeModuleId: string;
+}
+
+export const PanoramaPreview = forwardRef<PanoramaPreviewHandle, PanoramaPreviewProps>(
+  ({ activeModuleId }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const rendererRef = useRef<PanoramaRenderer | null>(null);
@@ -60,9 +67,6 @@ export function PanoramaPreview() {
   // Tracks which scene is currently loaded — prevents loadScenePack spam on every poll tick
   const loadedSceneRef = useRef<string | null>(null);
   const cubemapLoadedRef = useRef(false);
-
-  const [activeModuleId, setActiveModuleId] = useState("PlayerESP");
-  const [schema, setSchema] = useState<ConfigSchema | null>(null);
   const [cubemapDebugLogs, setCubemapDebugLogs] = useState<string[]>([]);
   const [useTestSkybox, setUseTestSkybox] = useState(true);
 
@@ -70,16 +74,13 @@ export function PanoramaPreview() {
     setCubemapDebugLogs((prev) => [...prev.slice(-48), msg]);
   };
 
-  const ipc =
-    typeof window !== "undefined" &&
-    (window as any).require?.("electron")?.ipcRenderer;
+  const ipc = typeof window !== "undefined" && window.electron?.ipcRenderer;
 
-  useEffect(() => {
-    if (!ipc) return;
-    ipc
-      .invoke("preview:schema", activeModuleId)
-      .then((s: ConfigSchema | null) => setSchema(s ?? null));
-  }, [activeModuleId, ipc]);
+  useImperativeHandle(ref, () => ({
+    updateConfig: (cfg: Record<string, unknown>) => {
+      compositorRef.current?.updateConfig(cfg);
+    }
+  }));
 
   useEffect(() => {
     if (!canvasRef.current || !overlayRef.current) return;
@@ -199,15 +200,15 @@ export function PanoramaPreview() {
                 if (scenePath) loadCubemapViaIPC(scenePath);
               })
               .catch(() => {
-                // Last resort: try the most common path pattern
-                loadCubemapViaIPC(`${activeModuleId}/scene_20260315_201309`);
+                // Last resort: try the most common path pattern (PlayerESP is guaranteed to exist in assets)
+                loadCubemapViaIPC(`PlayerESP/scene_20260311_003507`);
               });
           }
         })
         .catch((err: any) => {
           addCubemapLog("WARN: preview:load-scene failed: " + String(err));
           // Still try to load cubemap with a direct face load
-          loadCubemapViaIPC(`${activeModuleId}/scene_20260315_201309`);
+          loadCubemapViaIPC(`PlayerESP/scene_20260311_003507`);
         });
 
       const scenePoll = setInterval(() => {
@@ -218,7 +219,7 @@ export function PanoramaPreview() {
       cleanupFns.push(() => clearInterval(scenePoll));
     } else {
       // Non-Electron dev fallback
-      const devScenePath = "./assets/scenes/PlayerESP/scene_20260315_201309";
+      const devScenePath = "./assets/scenes/PlayerESP/scene_20260311_003507";
       fetch(devScenePath + "/scene.json")
         .then((r) => r.json())
         .then((raw) => {
@@ -301,14 +302,9 @@ export function PanoramaPreview() {
     dragStateRef.current.dragging = false;
   };
 
-  const handleConfigChange = (cfg: Record<string, unknown>) => {
-    compositorRef.current?.updateConfig(cfg);
-  };
-
   return (
-    <div className="flex min-h-full w-full flex-col gap-3">
-      <div className="flex items-center justify-between gap-3">
-        <ModuleSelector activeModuleId={activeModuleId} onSelect={setActiveModuleId} />
+    <div className="flex min-h-0 min-w-0 h-full w-full flex-col gap-3 relative">
+      <div className="absolute top-3 right-3 z-10 flex items-center justify-end pointer-events-auto">
         <button
           type="button"
           onClick={() => setUseTestSkybox((v) => !v)}
@@ -318,9 +314,8 @@ export function PanoramaPreview() {
         </button>
       </div>
 
-      {/* Removed scale-[1.28] — CSS scale distorts cubemap projection */}
       <div
-        className="relative mx-auto flex aspect-video w-full max-w-[960px] overflow-hidden rounded-2xl border border-border bg-black"
+        className="relative mx-auto flex flex-1 w-full overflow-hidden border border-white/5 bg-black"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -331,17 +326,9 @@ export function PanoramaPreview() {
           ref={overlayRef}
           className="pointer-events-none absolute inset-0 block h-full w-full"
         />
-        <div className="pointer-events-none absolute left-3 top-3 rounded bg-black/50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="pointer-events-none absolute left-3 top-3 rounded bg-black/50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground z-10">
           Panorama Preview
         </div>
-      </div>
-
-      <div className="shrink-0 rounded-2xl border border-border bg-black/60 p-3">
-        <ConfigPanel
-          moduleId={activeModuleId}
-          schema={schema}
-          onConfigChange={handleConfigChange}
-        />
       </div>
 
       {cubemapDebugLogs.length > 0 && (
@@ -356,4 +343,4 @@ export function PanoramaPreview() {
       )}
     </div>
   );
-}
+});

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type SettingKey = "autoInject" | "stealthMode" | "startMinimized" | "checkUpdates" | "useCloudSync" | "useBetaPayload" | "requireSubscription" | "useLocalFallback";
+export type SettingKey = "autoInject" | "stealthMode" | "startMinimized" | "checkUpdates" | "useCloudSync" | "useBetaPayload" | "requireSubscription" | "useLocalFallback" | "showDebugLog";
 
 /** Launcher appearance theme. "shader" = premium animated background, "vanguard" = cinematic 3D layout. */
 export type LauncherTheme = "default" | "minimal" | "professional" | "shader" | "vanguard";
@@ -17,6 +17,7 @@ export interface SettingsState {
     useLocalFallback: boolean;
     startMinimized: boolean;
     checkUpdates: boolean;
+    showDebugLog: boolean;
     /** Launcher UI theme (default, minimal, or premium shader). */
     launcherTheme: LauncherTheme;
     /** Which shader to show when launcherTheme is "shader". */
@@ -44,6 +45,7 @@ const defaultSettings: SettingsState = {
     useLocalFallback: false,
     startMinimized: false,
     checkUpdates: true,
+    showDebugLog: true,
     launcherTheme: "professional",
     shaderPreset: "gold-orbs",
     primaryColor: "#ffffff",
@@ -69,6 +71,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
                     ...parsed,
                     launcherTheme: finalTheme,
                     shaderPreset: (parsed.shaderPreset as SettingsState["shaderPreset"]) ?? defaultSettings.shaderPreset,
+                    showDebugLog: parsed.showDebugLog ?? defaultSettings.showDebugLog,
                     primaryColor: parsed.primaryColor ?? defaultSettings.primaryColor,
                     migratedV102: true,
                 };

@@ -14,6 +14,10 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
 import { OpenGLPreviewEmbed } from "./OpenGLPreviewEmbed";
+import { PanoramaPreview, type PanoramaPreviewHandle } from "../../renderer/components/PanoramaPreview";
+import { ModuleSelector } from "../../renderer/components/ModuleSelector";
+import { ConfigPanel } from "../../renderer/components/ConfigPanel";
+import type { ConfigSchema } from "../../renderer/preview/types";
 import type { PreviewOptions, EspMode, EspShaderPreset } from "./StevePreview";
 import {
   loadSavedConfigs,
@@ -47,6 +51,18 @@ const ConfigPage = ({ theme }: ConfigPageProps) => {
   const [cloudConfigs, setCloudConfigs] = useState<CloudConfig[]>([]);
   const [loadingCloud, setLoadingCloud] = useState(false);
   const [hoveredEspMode, setHoveredEspMode] = useState<EspMode | null>(null);
+
+  const [activeModuleId, setActiveModuleId] = useState("PlayerESP");
+  const [schema, setSchema] = useState<ConfigSchema | null>(null);
+  const panoramaRef = useRef<PanoramaPreviewHandle>(null);
+
+  const ipc = typeof window !== "undefined" && (window as any).require?.("electron")?.ipcRenderer;
+
+  useEffect(() => {
+    if (!ipc || activeModuleId === "PlayerESP") return;
+    ipc.invoke("preview:schema", activeModuleId)
+      .then((s: ConfigSchema | null) => setSchema(s ?? null));
+  }, [activeModuleId, ipc]);
 
   const ESP_MODE_LABELS: Record<EspMode, string> = {
     box: "Box ESP",
@@ -206,9 +222,17 @@ const ConfigPage = ({ theme }: ConfigPageProps) => {
         )}
       </div>
 
-      <div className={`grid min-h-0 flex-1 overflow-y-auto pb-10 ${theme === "professional" ? "gap-6 md:grid-cols-2 px-2" : "gap-10 md:grid-cols-2"}`}>
+      <div className={`grid min-h-0 flex-1 overflow-y-auto pb-10 ${theme === "professional" ? "gap-6 lg:grid-cols-[1fr_1.5fr] px-2" : "gap-10 lg:grid-cols-[1fr_1.5fr]"}`}>
+        
+        {/* Module Selector - Stretches across the top */}
+        <div className="md:col-span-2">
+          <ModuleSelector activeModuleId={activeModuleId} onSelect={setActiveModuleId} />
+        </div>
+
         {/* Left: Config selection */}
         <div className={`flex flex-col ${theme === "professional" ? "gap-4" : "gap-8"}`}>
+          {activeModuleId === "PlayerESP" ? (
+            <>
           {theme !== "professional" && (
             <>
               <div className="flex items-center justify-between px-1">
@@ -474,7 +498,16 @@ const ConfigPage = ({ theme }: ConfigPageProps) => {
               </div>
             </div>
           </div>
-
+            </>
+          ) : (
+            <div className={`flex flex-col gap-4 ${theme === "professional" ? "theme-professional-glass rounded-[1.5rem] p-6 text-white" : "border border-white/5 bg-white/[0.02] rounded-[2rem] p-8"}`}>
+              <ConfigPanel
+                moduleId={activeModuleId}
+                schema={schema}
+                onConfigChange={(cfg) => panoramaRef.current?.updateConfig(cfg)}
+              />
+            </div>
+          )}
         </div>
 
         {/* Right: Visual preview */}
@@ -506,8 +539,12 @@ const ConfigPage = ({ theme }: ConfigPageProps) => {
               </div>
             </div>
 
-            <div className={`flex flex-col overflow-hidden border border-white/5 bg-black/20 shadow-inner ${theme === "professional" ? "rounded h-[300px]" : "rounded-3xl h-[360px]"}`}>
-              <OpenGLPreviewEmbed previewOptions={previewOptions} />
+            <div className={`flex flex-col overflow-hidden border border-white/5 bg-black/20 shadow-inner ${theme === "professional" ? "rounded min-h-[450px] h-[450px]" : "rounded-3xl min-h-[500px] h-[500px]"}`}>
+              {activeModuleId === "PlayerESP" ? (
+                <OpenGLPreviewEmbed previewOptions={previewOptions} />
+              ) : (
+                <PanoramaPreview ref={panoramaRef} activeModuleId={activeModuleId} />
+              )}
             </div>
           </motion.div>
 

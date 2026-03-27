@@ -26,7 +26,7 @@ export class OverlayCompositor {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
   private readonly ipc =
-    typeof window !== "undefined" && (window as any).require?.("electron")?.ipcRenderer;
+    typeof window !== "undefined" && (window as any).electron?.ipcRenderer;
 
   private moduleId: string;
   private config: ModuleConfig;

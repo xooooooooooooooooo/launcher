@@ -3,7 +3,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { useSettings } from "@/context/SettingsContext";
 
-const ipcRenderer = typeof window !== "undefined" && (window as any).require ? (window as any).require("electron").ipcRenderer : null;
+const isElectron = typeof window !== "undefined" && window.electron;
+const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 
 const API_URL = "http://localhost:5000";
 

@@ -6,8 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import React from "react";
 
-const isElectron = typeof window !== "undefined" && (window as any).require;
-const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
+const isElectron = typeof window !== "undefined" && window.electron;
+const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 
 const SHADER_PRESETS: { id: ShaderPresetId; label: string }[] = [
   { id: "gold-orbs", label: "Gold orbs" },
@@ -47,6 +47,7 @@ const SettingsPage = ({ backendOnline }: SettingsPageProps) => {
       title: "General",
       items: [
         { key: "startMinimized", label: "Start minimized", desc: "Launch in system tray" },
+        { key: "showDebugLog", label: "Injection debug log", desc: "Show terminal outout when executing" },
         { key: "checkUpdates", label: "Check for updates", desc: "Automatically check for new versions" },
       ],
     },

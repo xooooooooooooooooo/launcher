@@ -16,7 +16,6 @@ import type { LicenseStatus } from "@/pages/Index";
 const navItems: { id: Page; label: string; icon: React.ElementType }[] = [
   { id: "inject", label: "Inject", icon: Zap },
   { id: "config", label: "Config", icon: Sliders },
-  { id: "visual", label: "Visual", icon: Eye },
   { id: "changelog", label: "Changelog", icon: ListOrdered },
 ];
 

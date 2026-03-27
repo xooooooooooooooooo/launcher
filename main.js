@@ -17,8 +17,9 @@ function getPreviewSdkJarPath() {
 // Cubemap path (Visual Configurator panorama) — same base as JAR for dev vs packaged
 function getCubemapDir(scenePath) {
   const rel = (scenePath || 'PlayerESP/scene_20260311_003507').replace(/\\/g, path.sep);
-  const base = app.isPackaged ? process.resourcesPath : __dirname;
-  return path.join(base, 'public', 'assets', 'scenes', rel);
+  return app.isPackaged
+    ? path.join(__dirname, 'dist', 'assets', 'scenes', rel)
+    : path.join(__dirname, 'public', 'assets', 'scenes', rel);
 }
 
 // Custom protocol so renderer can load cubemap PNGs by URL (avoids IPC size limit on base64)
@@ -130,8 +131,9 @@ function createWindow() {
     transparent: true,
     backgroundColor: '#00000000',
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     },
     icon: path.join(__dirname, 'public', 'icon.png')
   });
@@ -350,10 +352,9 @@ ipcMain.handle('preview:list-modules', () => {
   ];
 });
 
-// Default scene.json path for Visual Configurator (hitbox positions) — user Downloads folder
+// Default scene.json path for Visual Configurator (hitbox positions)
 function getDefaultSceneJsonPath() {
-  const home = process.env.USERPROFILE || os.homedir();
-  return path.join(home, 'Downloads', 'scene_20260311_003507', 'scene_20260311_003507', 'scene.json');
+  return path.join(getCubemapDir('PlayerESP/scene_20260311_003507'), 'scene.json');
 }
 
 // Load scene.json for panorama hitboxes (positions from this file, real-time reload)
@@ -452,11 +453,15 @@ app.whenReady().then(() => {
   // Initial check (DLLs)
   checkForUpdates();
 
-  // Periodic check (every 5 minutes)
+  // Periodic check (every 5 minutes for Supabase DLLs)
   setInterval(() => {
     checkForUpdates();
-    if (app.isPackaged) autoUpdater.checkForUpdates();
   }, 1000 * 60 * 5);
+
+  // Fast-polling check (every 15 seconds for GitHub Launcher Updates)
+  setInterval(() => {
+    if (app.isPackaged) autoUpdater.checkForUpdates();
+  }, 1000 * 15);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

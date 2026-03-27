@@ -42,8 +42,8 @@ const InputGroup = ({ id, type, label, placeholder, value, icon: Icon, onChange 
   </div>
 );
 
-const isElectron = typeof window !== "undefined" && (window as any).require;
-const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
+const isElectron = typeof window !== "undefined" && window.electron;
+const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 
 export default function Login({ onLoginSuccess }: LoginProps) {
   const [email, setEmail] = useState("");

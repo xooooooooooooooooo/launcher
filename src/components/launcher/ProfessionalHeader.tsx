@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Cpu, Settings, Eye, LogOut, User, Minimize, X } from "lucide-react";
+import { Cpu, Settings, Eye, LogOut, User, Minimize, X, Sliders } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import type { LicenseStatus } from "@/pages/Index";
 import packageJson from "../../../package.json";
@@ -16,11 +16,11 @@ interface HeaderProps {
 const navItems = [
   { id: "inject", label: "INJECTOR", icon: Cpu },
   { id: "settings", label: "SYSTEM", icon: Settings },
-  { id: "visual", label: "VISUALS", icon: Eye },
+  { id: "config", label: "CONFIG", icon: Sliders },
 ];
 
-const isElectron = typeof window !== "undefined" && (window as any).require;
-const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
+const isElectron = typeof window !== "undefined" && window.electron;
+const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 
 export const ProfessionalHeader: React.FC<HeaderProps> = ({
   activePage,

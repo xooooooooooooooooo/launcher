@@ -15,13 +15,12 @@ const API_HOST = "http://localhost";
 const API_PORTS = [5000, 5001, 5002, 5003, 5004, 5005, 5006, 5007, 5008, 5009];
 
 import ProfilePage from "@/components/launcher/ProfilePage";
-import VisualConfigPage from "@/components/launcher/VisualConfigPage";
 import { ProfessionalHeader } from "@/components/launcher/ProfessionalHeader";
 
 // ... (other imports)
 import { supabase } from "@/lib/supabaseClient";
 
-export type Page = "inject" | "config" | "visual" | "changelog" | "settings" | "profile";
+export type Page = "inject" | "config" | "changelog" | "settings" | "profile";
 
 // ... (existing code)
 
@@ -55,14 +54,14 @@ export interface LicenseStatus {
   expires_at?: string | null;
 }
 
-const isElectron = typeof window !== "undefined" && (window as any).require;
-const ipcRenderer = isElectron ? (window as any).require("electron").ipcRenderer : null;
+const isElectron = typeof window !== "undefined" && window.electron;
+const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 
 // Same translucent glass effect for header and sidebar when shader theme
 const SHADER_GLASS_CLASSES =
   "border-white/5 bg-black/30 shadow-[inset_0_1px_rgba(255,255,255,0.02),0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-[16px] backdrop-saturate-[180%]";
 
-const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any; session?: { access_token?: string } | null; dllPayload: { name: string; buffer: ArrayBuffer } | null }) => {
+const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any; session?: { access_token?: string; user?: any } | null; dllPayload: { name: string; buffer: ArrayBuffer } | null }) => {
   const [activePage, setActivePage] = useState<Page>("inject");
   const [status, setStatus] = useState<Status>("searching");
   const [processes, setProcesses] = useState<Process[]>([]);
@@ -99,12 +98,12 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       setUpdateReady(true);
     };
 
-    ipcRenderer.on("updater:available", onAvailable);
-    ipcRenderer.on("updater:downloaded", onDownloaded);
+    const cleanup1 = ipcRenderer.on("updater:available", onAvailable);
+    const cleanup2 = ipcRenderer.on("updater:downloaded", onDownloaded);
     
     return () => {
-      ipcRenderer.removeListener("updater:available", onAvailable);
-      ipcRenderer.removeListener("updater:downloaded", onDownloaded);
+      cleanup1();
+      cleanup2();
     };
   }, []);
 
@@ -474,7 +473,9 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
         timestamp: new Date().toLocaleString(),
         duration: elapsed,
       });
-      setShowDebugReport(true);
+      if (settings.showDebugLog) {
+        setShowDebugReport(true);
+      }
 
       if (data.success) {
         setStatus("success");
@@ -498,7 +499,9 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
         timestamp: new Date().toLocaleString(),
         duration: elapsed,
       });
-      setShowDebugReport(true);
+      if (settings.showDebugLog) {
+        setShowDebugReport(true);
+      }
       setStatus("error");
       setErrorMessage(msg);
       setTimeout(() => (selectedProcess ? setStatus("ready") : setStatus("searching")), 5000);
@@ -509,7 +512,7 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
 
   const handleInjectClick = () => {
     // Make the button actionable even when "disabled" so users see the reason.
-    if (status === "success") return;
+    if (status === "success" || status === "injecting") return;
     if (!backendOnline) {
       setStatus("error");
       setErrorMessage(`Backend offline (trying ${apiBaseUrl}). Start backend: cd backend && dotnet run`);
@@ -556,7 +559,6 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       />
     ),
     config: <ConfigPage theme={theme} />,
-    visual: <VisualConfigPage />,
     changelog: <ChangelogPage />,
     settings: <SettingsPage backendOnline={backendOnline} />,
     profile: <ProfilePage profile={profile} user={user} licenseStatus={licenseStatus} />,
@@ -571,27 +573,30 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
     <AnimatePresence>
       {updateReady && (
         <motion.div 
-          initial={{ opacity: 0, y: -50 }}
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -50 }}
-          className="absolute top-4 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg rounded-xl border border-primary/50 bg-black/80 backdrop-blur-xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-[0_15px_40px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--primary)/0.2)]"
+          exit={{ opacity: 0, y: 50 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg rounded-2xl border border-red-500/30 bg-red-950/40 backdrop-blur-2xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-[0_20px_50px_rgba(220,38,38,0.25),inset_0_1px_2px_rgba(255,255,255,0.1)] overflow-hidden"
         >
-          <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/20">
-              <Zap className="h-5 w-5 text-primary animate-pulse drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+          {/* Internal red glow */}
+          <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-red-500/10 pointer-events-none" />
+          
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-500/20 shadow-[inset_0_0_12px_rgba(239,68,68,0.3)] border border-red-500/20">
+              <Zap className="h-5 w-5 text-red-400 animate-pulse drop-shadow-[0_0_10px_rgba(248,113,113,0.8)]" />
             </div>
             <div>
-              <h3 className="text-sm font-bold tracking-wide text-white">
+              <h3 className="text-sm font-bold tracking-wide text-white drop-shadow-md">
                 Update v{updateVersion} Ready
               </h3>
-              <p className="text-xs font-mono text-white/50 mt-1">
+              <p className="text-xs font-mono text-red-200/70 mt-1">
                 Background payload downloaded.
               </p>
             </div>
           </div>
           <button
             onClick={() => ipcRenderer?.invoke("app:quit-and-install")}
-            className="shrink-0 flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-primary-foreground hover:brightness-125 transition-all shadow-[0_0_15px_hsl(var(--primary)/0.2)] hover:shadow-[0_0_25px_hsl(var(--primary)/0.5)]"
+            className="shrink-0 relative z-10 flex items-center justify-center gap-2 rounded-xl bg-red-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-500 transition-all shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] border border-red-400/50"
           >
             Install
           </button>

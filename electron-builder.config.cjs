@@ -14,7 +14,7 @@ module.exports = {
   directories: { output: 'dist-electron' },
   files: [
     'dist/**/*', 
-    { from: 'build-temp', to: '.', filter: ['main.js'] }, 
+    { from: 'build-temp', to: '.', filter: ['main.js', 'preload.js'] }, 
     'public/icon.png'
   ],
   icon: 'public/icon.png',
@@ -29,9 +29,9 @@ module.exports = {
     icon: 'public/icon.png',
   },
   nsis: {
-    oneClick: false,
-    perMachine: true,
-    allowToChangeInstallationDirectory: true,
+    oneClick: true,
+    perMachine: false,
+    allowToChangeInstallationDirectory: false,
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
     runAfterFinish: true,
