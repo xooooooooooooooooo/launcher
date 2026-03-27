@@ -89,26 +89,41 @@ function startPreviewBridge() {
     stdio: ['pipe', 'pipe', 'pipe'],
     windowsHide: true,
   });
+  
+  previewJvmProcess.on('error', (err) => {
+    console.warn('[PreviewBridge] Failed to start Java process:', err.message);
+    previewJvmProcess = null;
+    for (const [, p] of previewPending) p.reject(new Error('JVM failed to start'));
+    previewPending.clear();
+  });
+
+  if (!previewJvmProcess) return;
+
   let stderrBuf = '';
-  previewJvmProcess.stderr.on('data', (chunk) => {
-    stderrBuf += chunk.toString();
-    if (stderrBuf.includes('UnsupportedClassVersionError') && stderrBuf.includes('61.0')) {
-      console.warn('[PreviewBridge] preview-sdk.jar requires Java 17+. Install JDK 17 and set JAVA_HOME or add it to PATH.');
-    }
-  });
-  const rl = readline.createInterface({ input: previewJvmProcess.stdout });
-  rl.on('line', (line) => {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith('{')) return;
-    try {
-      const msg = JSON.parse(line);
-      const id = msg.requestId;
-      if (id && previewPending.has(id)) {
-        previewPending.get(id).resolve(msg);
-        previewPending.delete(id);
+  if (previewJvmProcess.stderr) {
+    previewJvmProcess.stderr.on('data', (chunk) => {
+      stderrBuf += chunk.toString();
+      if (stderrBuf.includes('UnsupportedClassVersionError') && stderrBuf.includes('61.0')) {
+        console.warn('[PreviewBridge] preview-sdk.jar requires Java 17+. Install JDK 17 and set JAVA_HOME or add it to PATH.');
       }
-    } catch (_) {}
-  });
+    });
+  }
+  if (previewJvmProcess.stdout) {
+    const rl = readline.createInterface({ input: previewJvmProcess.stdout });
+    rl.on('line', (line) => {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('{')) return;
+      try {
+        const msg = JSON.parse(line);
+        const id = msg.requestId;
+        if (id && previewPending.has(id)) {
+          previewPending.get(id).resolve(msg);
+          previewPending.delete(id);
+        }
+      } catch (_) {}
+    });
+  }
+
   previewJvmProcess.on('exit', (code) => {
     previewJvmProcess = null;
     for (const [, p] of previewPending) p.reject(new Error('JVM exited'));
