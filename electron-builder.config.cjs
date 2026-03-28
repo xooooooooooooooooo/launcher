@@ -10,6 +10,10 @@ const hasPreviewJar = fs.existsSync(previewJar);
 module.exports = {
   compression: 'maximum',
   asar: true, // Re-enabled to prevent installer freeze with tens of thousands of individual files
+  asarUnpack: [
+    "main.js",
+    "preload.js"
+  ],
   appId: 'com.hades.launcher',
   productName: 'Hades Launcher',
   directories: { output: 'dist-electron' },
