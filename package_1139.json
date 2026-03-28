@@ -1,6 +1,6 @@
-{
+﻿{
   "name": "hades-injector",
-  "version": "0.0.1",
+  "version": "1.13.9",
   "description": "Hades Client Launcher - Desktop App",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
     "build:backend": "cd backend && dotnet publish -c Release -r win-x64 --self-contained true -p:PublishAot=true -p:AssemblyName=backend -o ../dist-backend",
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
-    "package": "npm run type-check && npm run build && npm run build:backend && node -e \"require('fs').mkdirSync('build-temp', {recursive: true}); require('fs').copyFileSync('preload.js', 'build-temp/preload.js')\" && javascript-obfuscator main.js --output build-temp/main.js --compact true --string-array true && electron-builder --config electron-builder.config.cjs"
+    "package": "npm run type-check && npm run build && npm run build:backend && javascript-obfuscator main.js --output build-temp/main.js --compact true --control-flow-flattening true --string-array true --string-array-encoding base64 && electron-builder --config electron-builder.config.cjs"
   },
   "keywords": [
     "electron",
@@ -66,5 +66,27 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
     "three": "^0.160.0"
+  },
+  "build": {
+    "appId": "com.hades.launcher",
+    "productName": "Hades Launcher",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js"
+    ],
+    "win": {
+      "target": "nsis",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "xooooooooooooooooo",
+        "repo": "launcher"
+      }
+    ]
   }
 }

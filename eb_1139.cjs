@@ -1,4 +1,4 @@
-const path = require('path');
+﻿const path = require('path');
 const fs = require('fs');
 
 const previewExe = path.join(__dirname, 'resources', 'preview.exe');
@@ -9,13 +9,12 @@ const hasPreviewJar = fs.existsSync(previewJar);
 /** @type {import('electron-builder').Configuration} */
 module.exports = {
   compression: 'maximum',
-  asar: true, // Re-enabled to prevent installer freeze with tens of thousands of individual files
   appId: 'com.hades.launcher',
   productName: 'Hades Launcher',
   directories: { output: 'dist-electron' },
   files: [
     'dist/**/*', 
-    { from: 'build-temp', to: '.', filter: ['main.js', 'preload.js'] }, 
+    { from: 'build-temp', to: '.', filter: ['main.js'] }, 
     'public/icon.png'
   ],
   icon: 'public/icon.png',
@@ -37,7 +36,6 @@ module.exports = {
     createStartMenuShortcut: true,
     runAfterFinish: true,
     deleteAppDataOnUninstall: false,
-    include: 'build/installer.nsh'
   },
   publish: [
     {
