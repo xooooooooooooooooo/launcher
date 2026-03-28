@@ -61,7 +61,7 @@ const ipcRenderer = isElectron ? window.electron.ipcRenderer : null;
 const SHADER_GLASS_CLASSES =
   "border-white/5 bg-black/30 shadow-[inset_0_1px_rgba(255,255,255,0.02),0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-[16px] backdrop-saturate-[180%]";
 
-const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any; session?: { access_token?: string; user?: any } | null; dllPayload: { name: string; buffer: ArrayBuffer } | null }) => {
+const Index = ({ profile, user, session, sessionToken, dllPayload }: { profile: any; user: any; session?: { access_token?: string; user?: any } | null; sessionToken?: string | null; dllPayload: { name: string; buffer: ArrayBuffer } | null }) => {
   const [activePage, setActivePage] = useState<Page>("inject");
   const [status, setStatus] = useState<Status>("searching");
   const [processes, setProcesses] = useState<Process[]>([]);
@@ -353,9 +353,9 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       if (activeToken) {
         headers["Authorization"] = `Bearer ${activeToken}`;
-        feLog(`Auth token attached (${activeToken.length} chars)`);
+        feLog(`Auth token attached for Cloud Download (${activeToken.length} chars)`);
       } else {
-        feLog("No auth token — proceeding without authentication");
+        feLog("No auth token — proceeding to Cloud Download without authentication");
       }
       
       let isBetaOrAdmin = false;
@@ -449,15 +449,23 @@ const Index = ({ profile, user, session, dllPayload }: { profile: any; user: any
       feLog(`Sending POST to ${API_URL}/inject`);
       feLog(`Payload: PID=${process.pid}, name=${payloadName}, ephemeral=${!!base64Dll}, bytes=${base64Dll.length > 0 ? (base64Dll.length / 1024).toFixed(0) + 'KB' : 'none'}`);
 
+      // Isolate Injector headers to prevent breaking Supabase Edge CORS
+      const injectorHeaders: Record<string, string> = { ...headers };
+      if (sessionToken) {
+        injectorHeaders["X-Injector-Token"] = sessionToken;
+        feLog("Attached UUID Session Token for Local Injection bypass");
+      }
+
       const response = await fetch(`${API_URL}/inject`, {
         method: "POST",
-        headers,
+        headers: injectorHeaders,
         body: JSON.stringify({ 
           processId: process.pid, 
           dllName: payloadName,
           dllBytesBase64: base64Dll,
           ephemeral: !!base64Dll,
-          requireSubscription: effectiveRequireSub
+          requireSubscription: effectiveRequireSub,
+          sessionToken: sessionToken || null
         }),
       });
       feLog(`Backend responded: HTTP ${response.status}`);

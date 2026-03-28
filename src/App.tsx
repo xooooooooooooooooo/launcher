@@ -21,7 +21,52 @@ function AuthView({ session, profile }: { session: any; profile: any }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [dllPayload, setDllPayload] = useState<{ name: string; buffer: ArrayBuffer } | null>(null);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
   const { settings } = useSettings();
+
+  useEffect(() => {
+    if (session?.access_token && !sessionToken) {
+      fetch("https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/launcher-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ action: "create" })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          setSessionToken(data.token);
+        }
+      })
+      .catch(err => console.error("Failed to create launcher session:", err));
+    } else if (!session && sessionToken) {
+      setSessionToken(null);
+    }
+  }, [session, sessionToken]);
+
+  useEffect(() => {
+    const revokeTrigger = () => {
+      if (sessionToken) {
+        fetch("https://szxxwxwityixqzzmarlq.supabase.co/functions/v1/launcher-session", {
+          method: "POST",
+          keepalive: true,
+          headers: {
+            "Content-Type": "application/json",
+            "X-Session-Token": sessionToken
+          },
+          body: JSON.stringify({ action: "revoke" })
+        }).catch(() => {});
+      }
+    };
+
+    window.addEventListener("beforeunload", revokeTrigger);
+    return () => {
+      window.removeEventListener("beforeunload", revokeTrigger);
+      revokeTrigger();
+    };
+  }, [sessionToken]);
 
   useEffect(() => {
     if (!settings.useCloudSync) {
@@ -56,7 +101,7 @@ function AuthView({ session, profile }: { session: any; profile: any }) {
           transition={pageTransition.transition}
           className="h-full w-full min-h-0 min-w-0"
         >
-          <Launcher profile={profile} user={session.user} session={session} dllPayload={dllPayload} />
+          <Launcher profile={profile} user={session.user} session={session} sessionToken={sessionToken} dllPayload={dllPayload} />
         </motion.div>
       )}
     </AnimatePresence>

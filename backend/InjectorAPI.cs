@@ -200,7 +200,7 @@ namespace Launcher.API
             // Enable CORS for frontend access
             response.AddHeader("Access-Control-Allow-Origin", "*");
             response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Injector-Token");
 
             if (request.HttpMethod == "OPTIONS")
             {
@@ -387,6 +387,15 @@ namespace Launcher.API
                 {
                     Log("Subscription check skipped (disabled by settings or no token)");
                 }
+                
+                string? sessionToken = data.TryGetProperty("sessionToken", out var stProp) 
+                    ? stProp.GetString() 
+                    : request.Headers["X-Injector-Token"];
+                string injectionToken = !string.IsNullOrWhiteSpace(sessionToken) ? sessionToken : bearerToken;
+                if (!string.IsNullOrWhiteSpace(sessionToken)) {
+                    Log("✔ Dedicated Session Token detected! Injecting session UUID instead of raw JWT.");
+                }
+
                 int processId = 0;
                 if (data.TryGetProperty("processId", out var pidProp) && pidProp.ValueKind == JsonValueKind.Number)
                 {
@@ -586,7 +595,7 @@ namespace Launcher.API
                 bool success = false;
                 try 
                 {
-                    success = Injector.InjectDLL(processId, dllPath, bearerToken);
+                    success = Injector.InjectDLL(processId, dllPath, injectionToken);
                 } 
                 catch (Exception injEx) 
                 {

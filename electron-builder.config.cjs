@@ -9,6 +9,7 @@ const hasPreviewJar = fs.existsSync(previewJar);
 /** @type {import('electron-builder').Configuration} */
 module.exports = {
   compression: 'maximum',
+  asar: false, // Disables the virtual archive to prevent ERR_FAILED (-2) on strict Windows AVs
   appId: 'com.hades.launcher',
   productName: 'Hades Launcher',
   directories: { output: 'dist-electron' },
